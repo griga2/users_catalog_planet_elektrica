@@ -9,7 +9,7 @@ const router = createRouter({
       component: LayoutView,
       children:[
         {
-          path: '/catalog',
+          path: '/',
           name: 'layout',
           component: WorkerCatalogView,
         },

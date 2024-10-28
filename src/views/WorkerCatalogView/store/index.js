@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import axios from "axios"
 
-const base_url = 'http://localhost:3000'
+const base_url = import.meta.env.VITE_SERVER_HOST
 export const useWorkerStore = defineStore('worker', () => {
 
   const users = ref([])
