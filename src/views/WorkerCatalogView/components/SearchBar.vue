@@ -1,5 +1,5 @@
 <script setup>
-import { useWorkerStore } from '../store/index'
+import { useWorkerStore } from '../../../stores/index'
 const store = useWorkerStore();
 </script>
 

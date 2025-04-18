@@ -23,7 +23,9 @@
     "@vue/eslint-config-prettier": "^9.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.23.0",
+    "naive-ui": "^2.40.3",
     "prettier": "^3.2.5",
+    "vfonts": "^0.0.3",
     "vite": "^5.3.1"
   }
 }

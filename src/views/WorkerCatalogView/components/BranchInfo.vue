@@ -1,4 +1,6 @@
 <script setup>
+import WorkTimeComponent from '@/components/WorkTimeComponent.vue';
+
 const props = defineProps(["branch"])
 
 console.log(props.branch)
@@ -22,18 +24,25 @@ const copy = (value) => {
             
             <article class="flex_row ">
                 <img src="../../../assets/adres_grey.svg" class="order_0" height="18">
-                <a class="adres order_1">{{ props.branch.adres }}</a>
+                <a class="adres order_1">{{ props.branch.adress || 'Адрес не указан' }}</a>
             </article>
 
             <article class="flex_row">
                 <img src="../../../assets/phone_grey.svg" class="order_0" height="22">
-                <a :href="'tel:' + props.branch.phone" class="phone order_1">{{ props.branch.phone }}</a>
+                <a :href="'tel:' + props.branch.phone" class="phone order_1">{{ props.branch.phone || 'Номер не указан' }}</a>
             </article>
+        </section>
+        <section class="time_block">
+            <WorkTimeComponent :branch="props.branch"></WorkTimeComponent>
         </section>
     </section>
 </template>
 
 <style scoped>
+
+.time_block{
+    width: 20%;
+}
 .main{
     display: flex;
     width: 100%;
@@ -42,7 +51,7 @@ const copy = (value) => {
 
 .contacts{
     display: flex;
-    width: 100%;
+    width: 80%;
     height: 100%;
     flex-direction: column;
 }
@@ -69,9 +78,10 @@ h2 {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    gap: 3px;
-    width: 160px;
+    justify-content: start;
+    
+    gap: 5px;
+    width: 200px;
 }
 
 a{

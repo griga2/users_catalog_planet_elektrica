@@ -1,5 +1,6 @@
 <script setup>
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits, ref, onMounted, onUpdated } from 'vue';
+import IconContact from './IconContact.vue'
 const props = defineProps(['user'])
 const emits = defineEmits(['click_open_dop', 'click'])
 
@@ -17,7 +18,7 @@ const copy = (value) => {
 const GetBirthdayday = (_date) => {
     console.log(typeof (_date))
     const date = new Date(_date)
-    return date?.getDate() + '.' + (date?.getMonth() + 1);
+    return date?.getDate().toString().padStart(2,'0') + '.' + (date?.getMonth() + 1).toString().padStart(2,'0');
 }
 
 const openMailClient = (email) => {
@@ -25,84 +26,106 @@ const openMailClient = (email) => {
     window.location.href = "mailto:" + email;
 }
 
+const main_contact = ['workPhone','email']
+
+const chengevis = () => {
+    console.log('ua')
+    vis_ing.value = false;
+}
+
+const img_block = ref(null)
+
+onMounted(() => {
+    console.log(img_block.value);
+    img_block.value.onerror = chengevis;
+    vis_ing.value = true;
+})
+
+const vis_ing = ref(true);
 </script>
 
 <template>
     <section class="prod_cadr" :class="{open:props.user.visible_dop}">
-        <section class="main" style="z-index: 10;">
-            <section style="position: relative;">
-                <article class="artiv_ball" :class="{active:props.user.status}">
-                </article>
+        <section style="display: flex; flex: 35% 65%">
+            <section class="photo" style="z-index: 10; padding: 0px; margin: 0px; background-color: white;">
+                <img v-if="vis_ing" ref="img_block" height="220px" style=" border-radius: 8px 0px 0px 8px; object-fit: contain;" :src="`https://136703eb-05e89941-0f10-4e65-b543-d67d43f62dea.s3.timeweb.cloud${props.user.Photo}?t=${new Date().getTime()}`">
+                <img v-if="!vis_ing" src="../../../assets/userProfile.svg" height="220px" style="border-radius: 8px 0px 0px 8px;">
+                <!-- <img v-if="!vis_ing" :src="`/img/bookicon.svg`" alt="" style="width: 100px; height: 70px;"> -->
             </section>
-            
-            <section class="photo" style="z-index: 10;">
-
-            </section>
-            <section class="text" style="z-index: 10;">
-                <section>
-                    <article><h2>{{props.user?.name}}</h2></article>
-                    <article class="work"><span>{{props.user?.work}}</span></article>
-                </section>
-                <section>
-                    <article><h3>{{props.user.number}}</h3></article>
-                    <article class="contacts">
-                        <article v-if="props.user.phone">
-                            <img src="../../../assets/phone.svg">
-                            <a  :href="'tel:' + props.user.phone">{{props.user?.phone}}</a>
-                            <!-- <img src="../../../assets/copy.svg" @click="copy(props.user?.phone)"> -->
+            <section class="main" style="z-index: 10; width: 100%;">
+                <section class="head_block" style="z-index: 10;">
+                    <section class="contact_block">
+                        <article><h2>{{props.user?.full_name}}</h2></article>
+                        <article class="work"><span>{{props.user?.role.name}}</span></article>
+                        <section style="display: flex; flex-direction: column; flex-wrap: wrap; width: 100%; max-height: 120px; margin: 10px;" >
+                            <article v-for="contact of props.user.Contacs"> 
+                                <article v-if="main_contact.includes(contact[1]) && contact[0]" style="display: flex; flex-direction: row;">
+                                    <IconContact :value="contact[1]" >   
+                                    </IconContact>
+                                    <span>{{ contact[2] }}</span>
+                                </article>
+                            </article>
+                        </section>
+                    </section>
+                    <section>
+                        <article style="display: flex; flex-direction: row; gap: 5px;padding: 20px; font-family: circe;">
+                            <img src="../../../assets/cake.svg">
+                            <span>{{ GetBirthdayday(props.user.Birthday) }}</span>
                         </article>
-                        <article 
-                        v-if="props.user.mail"
-                        @click="openMailClient(props.user.mail)"><img src="../../../assets/mail.svg">
-                            <a :href="'mailto:' + props.user.emai">{{props.user?.mail}}</a>
-                            <!-- <img src="../../../assets/copy.svg"  @click="copy(props.user?.adres)"> -->
-                        </article>
-                    </article>
+                    </section>
+                </section>
+                <section class="status_block" v-if="props.user.Status">
+                    {{ props.user.Status }}
+                </section>
+                <section style="width: 100%;">
+                        <article><h3>{{props.user.number}}</h3></article>
                 </section>
             </section>
-            <section class="doing" style="z-index: 10; margin-top: 20px;">
-                <article class="birthday_row">
-                    <span >{{ GetBirthdayday(props.user.birthday) }}</span><img height="22" src="../../../assets/cake.svg">
-                </article>
-                <article v-for="doi in props.user.doing" class="do_row">
-                    <span>
-                        {{ doi }}
-                    </span>
-                    <img src="../../../assets/point.svg" height="8px">
-                </article>
-            </section>
-            
         </section>
-        <section class="wave_block">
-            <article v-for="contact of props.user.other_contacts" :key="contact.text" style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 10px">
-                <span  @click="">
-                    {{contact.text}}
-                </span>
-                <img src="../../../assets/copy_white.svg">
-            </article>
-        </section>
-        
     </section>
-    <article style="position: relative;">
-                <img 
-                class="arrow" 
-                :class="{rotate_arrow: props.user.visible_dop}" 
-                src="../../../assets/arrow.svg" 
-                @click="$emit('click_open_dop')">
-            </article>
+
 </template>
 
 <style scoped>
+
+.catalog {
+    width: calc(30% - 40px);
+    height: calc(100% - 40px);
+    background-color: white;
+    border-radius: 0px 0px 0px 0px;
+}
+
+.head_block{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+span {
+}
+
+.status_block {
+    font-family: circe;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+
+    white-space: pre-wrap;
+}
+
+.contact_block {
+    font-family: circe;
+    gap: 10px;
+}
 
 .wave_block{
     display: flex;
     flex-direction: column;
     align-items: start;
     justify-content: start;
-
-    padding: 10px;
+    /* padding: 10px; */
     gap: 5px;
-
+    width: 100%;
     color: white;
     font-family: circe
 
@@ -168,27 +191,17 @@ const openMailClient = (email) => {
 .prod_cadr{
     display: flex;
     flex-direction: column;
-    background-color: #a3a3a3;
     border-radius: 6px;
     /* align-items: center */
     justify-content: space-between;
     transition: all 0.3s;
-    height: 200px;
     width: 100%;
-}
-
-
-
-.open {
-    transition: all 0.3s;
-    height: 300px;
 }
 
 .dropdown{
     height: 100px;
-    background-color: #a3a3a3;
     border: 1px sodlid black;
-    border-radius: 0px 0px 6px 6px;
+    border-radius: 0px 0px 0px 0px;
     z-index: 1;
     position: relative;
     top: 180px;
@@ -202,26 +215,21 @@ const openMailClient = (email) => {
 }
 
 .main {
-    border-radius: 6px;
+    border-radius: 0px 6px 6px 0px;
     padding: 0px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     background-color: white;
     padding-left: 10px;
     display: flex;
-    flex-direction: row;
     transition: all 0.3s;
-    height: 200px;
+    min-height: 200px;
+    width: 100%;
+    margin: 0px;
 }   
 
 .photo {
-    width: 15%;
-    height: 200px;
-    position: relative;
-    top: 0px;
-    left: -10px;
-    border-radius: 6px 0px 0px 6px;
-    background-color: #a3a3a3;
+    border-radius: 8px 0px 0px 8px;
 }
 
 .contacts{
@@ -254,13 +262,13 @@ const openMailClient = (email) => {
 .work{
     color: rgba(0, 0, 0, 0.3);
     font-family: circe-extrabold;
-    font-size: 20px;
+    font-size: 18px;
     text-transform: uppercase;
     margin-top: -10px;
 }
 
 .text {
-    height: 200px;
+    min-height: 200px;
     display: flex;
     flex-direction: column;
     padding-top: 20px;
@@ -271,7 +279,9 @@ const openMailClient = (email) => {
     display: flex;
     flex-direction: column;
     padding-top: 20px;
+    min-height: 200px;
     height: 200px;
+    
     align-items: end;
     justify-content: start;
     width: 40%;
@@ -281,7 +291,7 @@ const openMailClient = (email) => {
 
 h2 {
     font-family: circe-bold;
-    font-size: 26px;
+    font-size: 36px;
 }
 
 a{
