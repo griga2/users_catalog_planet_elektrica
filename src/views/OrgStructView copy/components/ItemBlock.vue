@@ -32,7 +32,8 @@ const hors_options = [
 </script>
 
 <template>
-    <section class="main_role_item" @click="current_role = role" :class="{active: current_role.id == role.id}">
+    <section class="main_role_item" @click="current_role = role" 
+        :class="{active: current_role?.id == role.id}">
             <span>{{ role.index }}</span><span class="role_name">{{ role.name }}</span>
     </section>
 </template>

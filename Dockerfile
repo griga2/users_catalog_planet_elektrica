@@ -1,5 +1,5 @@
 # Этап сборки приложения
-FROM node:lts-alpine as build-stage
+FROM node:lts-alpine AS build-stage
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build
 
 # Этап production
-FROM nginx:stable-alpine as production-stage
+FROM nginx:stable-alpine AS production-stage
 
 # Копируем собранные файлы из этапа сборки в Nginx
 COPY --from=build-stage /app/dist /usr/share/nginx/html

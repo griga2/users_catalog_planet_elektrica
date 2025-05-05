@@ -31,24 +31,10 @@ const edit_roles = ['hr'];
 
 <template>
     <main>
-        <section>
-            <article v-if="checkLogin" style="text-align: center;">
-                <span class="inter_text">Войти</span>
-            </article>
-            <article  v-else>
-                {{ user.name }}
-            </article>
-        </section>
-        <RouterLink :to="'/catalog'">
+        <RouterLink  v-if="!names_editor.includes(route.name)"
+        :to="'/catalog'">
             <button>
                 Справочник
-            </button>
-        </RouterLink>
-        
-        <RouterLink v-if="!names_editor.includes(route.name) && edit_roles.includes(user.role)"
-            :to="'/edit_struct'">
-            <button>
-                Редактирование справочника
             </button>
         </RouterLink>
 
@@ -67,7 +53,6 @@ const edit_roles = ['hr'];
         </RouterLink>
 
         <RouterLink v-if="names_editor.includes(route.name)"
-
             :to="'/edit_roles'">
             <button>
                 Роли
@@ -87,6 +72,8 @@ main{
     background-color: white;
     padding:8px;
     border-radius: 10px;
+    justify-content: start;
+    align-items: center;
 }
 
 button{
@@ -94,7 +81,6 @@ button{
     background-color: white;
     border: 0px;
     font-size: 28px;
-    padding: 5px;
 }
 
 .inter_text{
@@ -104,6 +90,7 @@ button{
     font-size: 28px;
     padding: 5px;
     font-family: circe;
+    text-align: center;
 }
 
 </style>

@@ -29,17 +29,9 @@ const  updateBranch = async () => {
 
 <template>
     <main class="main_edit_role">
-        <section style="display: flex; flex-direction: row;" v-if="current_role != null">
-            {{ props.row.name }}
-            <section style="width: 100%;">
-                    <article class="input_block" style="align-items: center; gap: 10px; width: 400px;">
-                        <n-checkbox 
-                            size="large"
-                            @input="current_role.can_edit"  
-                            placeholder=" "/>    
-                        <span>Можер редактировать справочник</span>
-                       
-                    </article>
+        <section style="display: flex; flex-direction: column;" v-if="current_role != null">
+            {{ current_role.name }}
+            <section style="width: 100%;">  
             </section>
         </section>
     </main>
@@ -52,7 +44,7 @@ const  updateBranch = async () => {
     width: 250px;
     display: flex;
     flex-direction: row;
-    align-items: c;
+    align-items: center;
     justify-content: start;
 }
 
@@ -62,6 +54,9 @@ const  updateBranch = async () => {
     height: 100%;
     padding: 20px;
     margin-left: 10px;
+
+    display: flex;
+    flex-direction: column;
 }
 
 

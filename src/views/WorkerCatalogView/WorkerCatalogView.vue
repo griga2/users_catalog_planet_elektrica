@@ -21,28 +21,33 @@ const {
 <template>
     <main>
         <BranchTree style="width: 350px;"></BranchTree>
-        <section class="list">
+        <section class="main_menu_block">
             <SearchBar 
-                class="margined_list_block search_bar"
-                style="margin-top: 0px; position: fixed;">
-            </SearchBar>
-            <article class="branch_info margined_list_block" v-if="current_catalog" >
-                <BranchInfo  :branch="current_catalog"> </BranchInfo>
-            </article>
-            <article style="padding-top: 215px;" v-if="current_catalog != null"></article>
-            <article style="padding-top: 50px;" v-if="current_catalog == null || current_catalog == ''"></article>
-
-            <article v-for="worker of users" :key="worker.id" class="margined_list_block">
-                <WorkerCard  :user="worker" @click_open_dop="() => {
-                    worker.visible_dop = !worker.visible_dop}
-                ">
-                </WorkerCard>
-            </article>
+                    class="margined_list_block search_bar">
+                </SearchBar>
+                <article class="branch_info margined_list_block" v-if="current_catalog" >
+                    <BranchInfo  :branch="current_catalog"> </BranchInfo>
+                </article>
+            <section class="list">
+                <article v-for="worker of users" :key="worker.id" class="margined_list_block">
+                    <WorkerCard  :user="worker" @click_open_dop="() => {
+                        worker.visible_dop = !worker.visible_dop}
+                    ">
+                    </WorkerCard>
+                </article>
+            </section>
         </section>
+
     </main>
 </template>
 
 <style scoped>
+
+.main_menu_block{
+    width: 100%;
+    height: 100%;
+    padding: 0px 20px;
+}
 
 main {
     display: flex;
@@ -56,32 +61,26 @@ main {
 
 .branch_info {
     height: 150px;
-    width: 84%;
     background-color: white;
     border-radius: 6px;
-    position: fixed;
     z-index: 20;
-    padding: 10px;
-    top: 145px;
+    width: 100%;
 }
 
 .search_bar{
-    position: fixed;
-    width: 84%;
-    z-index: 20; 
-    top: 89px;
+    width: 100%;
+    z-index: 20;
+    margin-bottom: 20px;
 }
 
 .list{
-    width: calc(100% - 200px);
+    margin-top: 20px;
+    width: 100%;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    height: calc(100% - 6px);
-    margin-left: 25px;
-    padding-right: 8px;
-    margin-bottom: 28px;
+    height: calc(100% - 255px);
     gap: 10px;
 }
 

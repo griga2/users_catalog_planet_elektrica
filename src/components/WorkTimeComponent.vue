@@ -75,7 +75,7 @@ const time_convert = (time) => {
 main{
     display: flex;
     flex-direction: column;
-    
+    width: 200px;
 }
 
 * {
