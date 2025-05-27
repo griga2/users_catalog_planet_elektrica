@@ -31,8 +31,7 @@ const {
             <section class="list">
                 <article v-for="worker of users" :key="worker.id" class="margined_list_block">
                     <WorkerCard  :user="worker" @click_open_dop="() => {
-                        worker.visible_dop = !worker.visible_dop}
-                    ">
+                        worker.visible_dop = !worker.visible_dop}">
                     </WorkerCard>
                 </article>
             </section>

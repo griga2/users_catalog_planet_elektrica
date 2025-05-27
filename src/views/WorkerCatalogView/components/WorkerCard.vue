@@ -48,7 +48,7 @@ const vis_ing = ref(true);
     <section class="prod_cadr" :class="{open:props.user.visible_dop}">
         <section style="display: flex; flex: 35% 65%">
             <section class="photo" style="z-index: 10; padding: 0px; margin: 0px; background-color: white;">
-                <img v-if="vis_ing" ref="img_block" height="220px" style=" border-radius: 8px 0px 0px 8px; object-fit: contain;" :src="`https://136703eb-05e89941-0f10-4e65-b543-d67d43f62dea.s3.timeweb.cloud${props.user.Photo}?t=${new Date().getTime()}`">
+                <img v-if="vis_ing" ref="img_block" height="220px" style=" border-radius: 8px 0px 0px 8px; object-fit: contain;" :src="`https://136703eb-05e89941-0f10-4e65-b543-d67d43f62dea.s3.timeweb.cloud${props.user?.Photo}?t=${new Date().getTime()}`">
                 <img v-if="!vis_ing" src="../../../assets/userProfile.svg" height="220px" style="border-radius: 8px 0px 0px 8px;">
                 <!-- <img v-if="!vis_ing" :src="`/img/bookicon.svg`" alt="" style="width: 100px; height: 70px;"> -->
             </section>
@@ -56,7 +56,7 @@ const vis_ing = ref(true);
                 <section class="head_block" style="z-index: 10;">
                     <section class="contact_block">
                         <article><h2>{{props.user?.full_name}}</h2></article>
-                        <article class="work"><span>{{props.user?.role.name}}</span></article>
+                        <article class="work"><span>{{props.user?.role?.name}}</span></article>
                         <section style="display: flex; flex-direction: column; flex-wrap: wrap; width: 100%; max-height: 120px; margin: 10px;" >
                             <article v-for="contact of props.user.Contacs"> 
                                 <article v-if="main_contact.includes(contact[1]) && contact[0]" style="display: flex; flex-direction: row;">
@@ -70,15 +70,15 @@ const vis_ing = ref(true);
                     <section>
                         <article style="display: flex; flex-direction: row; gap: 5px;padding: 20px; font-family: circe;">
                             <img src="../../../assets/cake.svg">
-                            <span>{{ GetBirthdayday(props.user.Birthday) }}</span>
+                            <span>{{ GetBirthdayday(props.user?.Birthday) }}</span>
                         </article>
                     </section>
                 </section>
-                <section class="status_block" v-if="props.user.Status">
-                    {{ props.user.Status }}
+                <section class="status_block" v-if="props.user?.Status">
+                    {{ props.user?.Status }}
                 </section>
                 <section style="width: 100%;">
-                        <article><h3>{{props.user.number}}</h3></article>
+                        <article><h3>{{props.user?.number}}</h3></article>
                 </section>
             </section>
         </section>
