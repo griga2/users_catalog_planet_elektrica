@@ -38,13 +38,16 @@ export const useWorkerStore = defineStore('worker', () => {
   }
 
 
-  const SearchUser = async (text) => {
+  const SearchUser = async (text, open, date) => {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
       url: `${base_url}/catalog/search`,
-      params:{
+      params: open ? {
         text: text
+      } : {
+         text: text,
+         date: date
       }
     }
     const a = await axios.request(config);

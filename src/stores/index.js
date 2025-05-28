@@ -96,13 +96,16 @@ export const useWorkerStore = defineStore('worker', () => {
     current_user.value = null;
   }
 
-  const SearchUser = async (text) => {
+  const SearchUser = async (text, open, date) => {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
       url: `${base_url}/catalog/search`,
-      params:{
+      params: open ? {
         text: text
+      } : {
+         text: text,
+         date: date
       }
     }
     const a = await axios.request(config);
@@ -164,9 +167,6 @@ export const useWorkerStore = defineStore('worker', () => {
       maxBodyLength: Infinity,
       url: `${base_url}/catalog/user`,
       data:{
-        last_name: current_user.value.LastName,
-        first_name: current_user.value.Name,
-        second_name: current_user.value.MidName,
         birthday: current_user.value.Birthday,
         status: current_user.value.Status,
         photo: current_user.value.Photo,

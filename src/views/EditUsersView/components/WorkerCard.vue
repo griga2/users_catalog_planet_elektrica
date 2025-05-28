@@ -55,7 +55,7 @@ watch(props.user.Photo, async (newQuestion, oldQuestion) => {
             <section class="photo" style=" padding: 0px; margin: 0px;">
                 <img v-if="vis_ing" ref="img_block" height="200px" 
                 style=" border-radius: 8px 0px 0px 8px; object-fit: contain;" 
-                :src="`https://136703eb-05e89941-0f10-4e65-b543-d67d43f62dea.s3.timeweb.cloud${props.user.Photo}?t=${new Date().getTime()}`">
+                :src="`https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea${props.user?.Photo}?t=${new Date().getTime()}`">
                 <img v-if="!vis_ing" src="../../../assets/userProfile.svg" 
                 height="200px" style="border-radius: 6px 0px 0px 6px;">
             </section>
