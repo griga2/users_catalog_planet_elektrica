@@ -24,11 +24,11 @@ const {
         <section class="main_menu_block">
             <SearchBar 
                     class="margined_list_block search_bar">
-                </SearchBar>
-                <article class="branch_info margined_list_block" v-if="current_catalog" >
-                    <BranchInfo  :branch="current_catalog"> </BranchInfo>
-                </article>
-            <section class="list">
+            </SearchBar>
+            <article class="branch_info margined_list_block" v-if="current_catalog" >
+                <BranchInfo  :branch="current_catalog"></BranchInfo>
+            </article>
+            <section class="list" :style="{height: !current_catalog ? 'calc(100% - 87px)': ''}">
                 <article v-for="worker of users" :key="worker.id" class="margined_list_block">
                     <WorkerCard  :user="worker" @click_open_dop="() => {
                         worker.visible_dop = !worker.visible_dop}">

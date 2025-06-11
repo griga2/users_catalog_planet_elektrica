@@ -15,9 +15,9 @@ const clickLupa = () => {
 }
 
 onMounted(() => {
-    const startDate = new Date();
-    const endDate = new Date(new Date().setDate(startDate.getDate() + 7));
-    date.value = [startDate, endDate];
+    // const startDate = new Date();
+    // const endDate = new Date(new Date().setDate(startDate.getDate() + 7));
+    // date.value = [startDate, endDate];
 })
 
 const input = (event) => {  

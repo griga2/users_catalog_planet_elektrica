@@ -105,7 +105,7 @@ export const useWorkerStore = defineStore('worker', () => {
         text: text
       } : {
          text: text,
-         date: date
+         date: date ? date: null,
       }
     }
     const a = await axios.request(config);
