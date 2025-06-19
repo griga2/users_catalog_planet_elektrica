@@ -25,7 +25,7 @@ const copy = (value) => {
 }
 
 const GetBirthdayday = (_date) => {
-    console.log(typeof (_date))
+    // console.log(typeof (_date))
     const date = new Date(_date)
     return date?.getDate().toString().padStart(2,'0') + '.' + (date?.getMonth() + 1).toString().padStart(2,'0');
 }
@@ -38,7 +38,7 @@ const openMailClient = (email) => {
 const main_contact = ['workPhone','email']
 
 const chengevis = () => {
-    console.log('ua')
+    // console.log('ua')
     vis_ing.value = false;
 }
 
@@ -67,7 +67,7 @@ const vis_ing = ref(true);
                         <article><h2>{{props.user?.full_name}}</h2></article>
                         <article class="work" 
                         v-if="finding"
-                        @click="emits('click_dep',{depID:props.user?.depID, userID: props.user.ID})"><span>{{props.user?.department_name}}</span></article>
+                        @click="emits('click_dep',{depID:props.user?.DepartamentID, userID: props.user.ID})"><span>{{props.user?.department_name}}</span></article>
                         <article class="work"><span>{{props.user?.role?.name}}</span></article>
                         <section style="display: flex; flex-direction: column; flex-wrap: wrap; width: 100%; max-height: 120px; margin: 10px;" >
                             <article v-for="contact of props.user.Contacs"> 

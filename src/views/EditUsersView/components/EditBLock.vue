@@ -55,7 +55,7 @@ const updateRole = async (role) => {
 }
 
 const chengevis = () => {
-    console.log('ua')
+    // console.log('ua')
     vis_ing.value = false;
 }
 

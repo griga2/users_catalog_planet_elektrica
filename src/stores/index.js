@@ -82,6 +82,19 @@ export const useWorkerStore = defineStore('worker', () => {
   catalog.value = a.data;
   }
 
+  const getBranch = async (id) => {
+ let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `${base_url}/catalog/branch`,
+      params:{
+        branch: id
+      }
+    }
+    const a = await axios.request(config);
+    current_catalog.value = a.data;
+  } 
+
   const getUsers = async () => {
     users.value = [];
     finding.value = false;
@@ -327,6 +340,7 @@ export const useWorkerStore = defineStore('worker', () => {
     current_catalog,
     getBranches,
     users,
+    getBranch,
     updateRole,
     getUsers,
     open_time_branch,

@@ -16,6 +16,10 @@ const {
     finding
 } = storeToRefs(store)
 
+const click_dep = async (data) => {
+    await store.getBranch(data.depID);
+    await store.getUsers();
+}
 
 </script>
 
@@ -33,9 +37,7 @@ const {
                 <article v-for="worker of users" :key="worker.id" class="margined_list_block">
                     <WorkerCard  :user="worker"
                     @click_dep="(data) => {
-                        current_catalog = catalog.find(el => el.ID == data.depID);
-                        console.log(current_catalog)
-                        store.getUsers()
+                        click_dep(data)
                     }"
                     @click_open_dop="() => {
                         worker.visible_dop = !worker.visible_dop}">

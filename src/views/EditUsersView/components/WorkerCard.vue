@@ -15,7 +15,7 @@ const copy = (value) => {
 }
 
 const GetBirthdayday = (_date) => {
-    console.log(typeof (_date))
+    // console.log(typeof (_date))
     const date = new Date(_date)
     return date?.getDate() + '.' + (date?.getMonth() + 1);
 }
@@ -26,7 +26,7 @@ const openMailClient = (email) => {
 }
 
 const chengevis = () => {
-    console.log('ua')
+    // console.log('ua')
     vis_ing.value = false;
 }
 
