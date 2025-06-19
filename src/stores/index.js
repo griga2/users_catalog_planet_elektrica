@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import axios from "axios"
+import { find } from 'naive-ui/es/_utils/cssr'
 
 const base_url = import.meta.env.VITE_SERVER_HOST
 export const useWorkerStore = defineStore('worker', () => {
@@ -14,6 +15,7 @@ export const useWorkerStore = defineStore('worker', () => {
   const open_time_branch = ref([])
   const roles = ref([]);
   const branch_buffer = ref(null)
+  const finding = ref(false);
 
   const insertBranch = async () => {
     let config = {
@@ -82,7 +84,7 @@ export const useWorkerStore = defineStore('worker', () => {
 
   const getUsers = async () => {
     users.value = [];
-
+    finding.value = false;
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
@@ -111,6 +113,8 @@ export const useWorkerStore = defineStore('worker', () => {
     const a = await axios.request(config);
     current_catalog.value = null;
     users.value = a.data;
+    finding.value = true;
+
   }
 
   const updateBranch = async () => {
@@ -332,6 +336,7 @@ export const useWorkerStore = defineStore('worker', () => {
     current_user,
     roles,
     getRoles,
-    current_role
+    current_role,
+    finding,
   }
 })

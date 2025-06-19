@@ -2,7 +2,16 @@
 import { defineProps, defineEmits, ref, onMounted, onUpdated } from 'vue';
 import IconContact from './IconContact.vue'
 const props = defineProps(['user'])
-const emits = defineEmits(['click_open_dop', 'click'])
+const emits = defineEmits(['click_open_dop', 'click', 'click_dep'])
+
+
+
+import { storeToRefs } from 'pinia';
+import {useWorkerStore} from '../../../stores/index.js'
+const store = useWorkerStore();
+const {
+    finding
+} = storeToRefs(store)
 
 const copy = (value) => {
     navigator.clipboard.writeText(value)
@@ -56,11 +65,14 @@ const vis_ing = ref(true);
                 <section class="head_block" style="z-index: 10;">
                     <section class="contact_block">
                         <article><h2>{{props.user?.full_name}}</h2></article>
+                        <article class="work" 
+                        v-if="finding"
+                        @click="emits('click_dep',{depID:props.user?.depID, userID: props.user.ID})"><span>{{props.user?.department_name}}</span></article>
                         <article class="work"><span>{{props.user?.role?.name}}</span></article>
                         <section style="display: flex; flex-direction: column; flex-wrap: wrap; width: 100%; max-height: 120px; margin: 10px;" >
                             <article v-for="contact of props.user.Contacs"> 
-                                <article v-if="main_contact.includes(contact[1]) && contact[0]" style="display: flex; flex-direction: row;">
-                                    <IconContact :value="contact[1]" >   
+                                <article v-if="main_contact.includes(contact[1]) && contact[0] && contact[2] != ''" style="display: flex; flex-direction: row;">
+                                    <IconContact :value="contact[1]">   
                                     </IconContact>
                                     <span>{{ contact[2] }}</span>
                                 </article>

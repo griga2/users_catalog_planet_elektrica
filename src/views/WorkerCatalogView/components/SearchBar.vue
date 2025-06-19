@@ -10,8 +10,13 @@ const inputText = ref('')
 const serch_focus = ref(null)
 
 const clickLupa = () => {
-    console.log('click lupa', serch_focus.value)
-    serch_focus.value.focus();
+    if (inputText.value != "") {
+        store.SearchUser(inputText.value, !open.value, JSON.stringify(date.value));
+    } else {
+        console.log('click lupa', serch_focus.value)
+        serch_focus.value.focus();
+    }
+    
 }
 
 onMounted(() => {

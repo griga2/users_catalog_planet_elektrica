@@ -1,5 +1,5 @@
 <script setup>
-import {useWorkerStore} from '../../stores/index.js'
+    import {useWorkerStore} from '../../stores/index.js'
 import { computed, onMounted} from 'vue'
 import WorkerCard from './components/WorkerCard.vue';
 import { storeToRefs } from 'pinia';
@@ -13,6 +13,7 @@ const {
     catalog,
     current_catalog,
     show_branch_info,
+    finding
 } = storeToRefs(store)
 
 
@@ -30,7 +31,13 @@ const {
             </article>
             <section class="list" :style="{height: !current_catalog ? 'calc(100% - 87px)': ''}">
                 <article v-for="worker of users" :key="worker.id" class="margined_list_block">
-                    <WorkerCard  :user="worker" @click_open_dop="() => {
+                    <WorkerCard  :user="worker"
+                    @click_dep="(data) => {
+                        current_catalog = catalog.find(el => el.ID == data.depID);
+                        console.log(current_catalog)
+                        store.getUsers()
+                    }"
+                    @click_open_dop="() => {
                         worker.visible_dop = !worker.visible_dop}">
                     </WorkerCard>
                 </article>
