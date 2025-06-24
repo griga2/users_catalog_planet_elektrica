@@ -27,7 +27,7 @@ import CatalogRow from '@/views/WorkerCatalogView/components/CatalogRow.vue'
                  @click_arrow="(value) => {$emit('click_arrow', value)}"></CatalogRow>
             </article>
         </section>
-    </section>
+    </section> 
 </template>
 
 <style scoped>

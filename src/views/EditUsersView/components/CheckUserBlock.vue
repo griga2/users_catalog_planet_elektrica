@@ -26,11 +26,19 @@ onMounted(() => {
     store.getBranches()
 })
 
+const add_user = () => {
+    store.addUser()   
+}
+
 
 </script>
 
 <template>
     <main style="overflow-y: scroll;" class="margined_list_block">
+        <article id="add_user_bt" @click="add_user">
+        Добавить пользывателя<img height="32px" src="../../../assets/plus.svg">
+        </article>
+
         <article v-for="worker of users" :key="worker.id"  >
             <WorkerCard 
                 @click="() => {console.log(worker);current_user = worker}"
@@ -40,6 +48,7 @@ onMounted(() => {
                 :class="{active: current_user?.id === worker.id}">
             </WorkerCard>
         </article>  
+        
     </main>
 </template>
 
@@ -50,6 +59,20 @@ main{
     margin-top: 8px;
     overflow-y: hidden;
     padding: 10px;
+}
+
+#add_user_bt{
+    background-color: white;
+    height: 32px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    border-radius: 4px;
+    text-align: center;
+    font-family: 'circe-bold'
 }
 
 .worker_card{

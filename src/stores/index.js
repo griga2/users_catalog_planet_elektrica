@@ -307,6 +307,24 @@ export const useWorkerStore = defineStore('worker', () => {
     console.log(current_user.value.Photo);
   }
 
+  const addUser = async () => {
+    const data = {
+      departament: current_catalog.value.ID,
+    };
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${base_url}/catalog/add_user'`,
+      data: body,
+      headers:{
+        'Content-Type': 'multipart/form-data;',
+      }
+    }
+    const rez  = await axios.request(
+      config
+    );
+  }
+
   // console.log(image)
   //       const body = new FormData();
   //       body.append('image', image)
@@ -326,7 +344,41 @@ export const useWorkerStore = defineStore('worker', () => {
   //           config
   //       );
 
+  const firstDayStart = async () => {
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${base_url}/catalog/first_day_start/` + current_user.value.ID,
+      data: body,
+      headers:{
+        'Content-Type': 'multipart/form-data;',
+      }
+    }
+    const rez  = await axios.request(
+      config
+    );
+  }
+
+const removeUserStart = async () => {
+  let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${base_url}/catalog/first_day_start/` + current_user.value.ID,
+      data: body,
+      headers:{
+        'Content-Type': 'multipart/form-data;',
+      }
+    }
+    const rez  = await axios.request(
+      config
+    );
+  }
+
+
+
   return {
+    removeUserStart,
+    firstDayStart,
     moveBranch,
     deleteBranch,
     uploadFile,

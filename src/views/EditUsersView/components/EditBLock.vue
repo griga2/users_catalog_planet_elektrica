@@ -74,11 +74,27 @@ onMounted(() => {
 
 const vis_ing = ref(true);
 
+const firstDayStart = () => {
+    store.firstDayStart();
+}
+
+const removeUser = () => {
+    store.removeUserStart();
+}
+
 </script>
 
 <template>
     <main class="main_edit">
-            <section style="display : flex; flex-direction:  column; width: 100%;" >
+        <section class="activite_block">
+            <button @click="firstDayStart">
+                Вышел на первый день
+            </button>
+            <button @click="removeUser">
+                Уволить
+            </button>
+        </section>
+        <section style="display : flex; flex-direction:  column; width: 100%;" >
                 <section style="display: flex; flex-direction: row; flex-wrap: nowrap; width: 100%;">
                     <section style="width: 100%; flex-direction: column;">
                         <span class="header">Общая информация</span>
@@ -170,7 +186,7 @@ const vis_ing = ref(true);
                 </article>
             </section>
             <section class="info_column_block" style="width: 100%;">
-                <span class="header">Отпуска</span>
+                <span class="header">Отпуск</span>
                 <section class="info_block" style="width: 100%;">
                     <article style="display: flex; flex-direction: row;" >
                         <article style="display: flex; flex-direction: row; gap: 10px;">
@@ -190,7 +206,7 @@ const vis_ing = ref(true);
                         </article>
                     </article>
                     <article class="free_input_block" style=''>
-                        <span>Коментарий к отпуску</span>
+                        <span>Комментарий к отпуску</span>
                         <n-input
                             @input="() => {updateUser()}" 
                             v-model:value="current_user.OtpusctText"
@@ -241,6 +257,10 @@ const vis_ing = ref(true);
 .open{
     height: 250px;
     visibility: visible;
+}
+
+.activite_block{
+
 }
 
 .info_column_block{
