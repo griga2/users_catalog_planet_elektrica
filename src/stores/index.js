@@ -264,11 +264,15 @@ export const useWorkerStore = defineStore('worker', () => {
     roles.value = a.data;
   }
 
-  const moveRoles = async () => {
+  const moveRoles = async (role,axis) => {
     let config = {
       method: 'put',
       maxBodyLength: Infinity,
-      url: `${base_url}/catalog/move_role`
+      url: `${base_url}/catalog/move_role`,
+      data: {
+        role: role,
+        axis: axis
+      }
     }
     const a = await axios.request(config);
     roles.value = a.data;
@@ -311,11 +315,12 @@ export const useWorkerStore = defineStore('worker', () => {
     const data = {
       departament: current_catalog.value.ID,
     };
+    console.log(data,'add user')
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: `${base_url}/catalog/add_user'`,
-      data: body,
+      url: `${base_url}/catalog/add_user`,
+      data: data,
       headers:{
         'Content-Type': 'multipart/form-data;',
       }
@@ -323,6 +328,7 @@ export const useWorkerStore = defineStore('worker', () => {
     const rez  = await axios.request(
       config
     );
+    await getUsers();
   }
 
   // console.log(image)
@@ -377,16 +383,18 @@ const removeUserStart = async () => {
 
 const ClickArrow = (id) => {
   console.log(id,'ClickArrow')
-  catalog.value.map((el) => {el = findAndChenchArrow(el, id); return el;})
+  catalog.value = catalog.value.map((el) => {el = findAndChenchArrow(el, id); return el;})
   // catalog.map(el => {if (el.id == value) el.is_open = !el.is_open; return el})
 }
 
 const findAndChenchArrow = (catalog, id) => {
+  // console.log(catalog.id,id)
+  
   if(catalog.id == id) {
     catalog.is_open = !catalog.is_open;
   }
   if (catalog.children) {
-    catalog.children = catalog.children.map((el) => {el = findAndChenchArrow(el); return el})
+    catalog.children = catalog.children.map((el) => {el = findAndChenchArrow(el,id); return el})
   }
   return catalog;
 }
@@ -420,5 +428,7 @@ const findAndChenchArrow = (catalog, id) => {
     getRoles,
     current_role,
     finding,
+    moveRoles,
+    addUser
   }
 })

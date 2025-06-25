@@ -14,7 +14,8 @@ const {
     catalog,
     current_catalog,
     show_branch_info,
-    roles
+    roles,
+    current_role
 } = storeToRefs(store)
 
 
@@ -32,7 +33,7 @@ const deleteRole = () => {
 }
 
 const moveRole = (axis) => {
-    store.moveRole(axis);
+    store.moveRoles(current_role.value.id,axis);
 }
 
 
