@@ -7,7 +7,7 @@ const base_url = import.meta.env.VITE_SERVER_HOST
 export const useWorkerStore = defineStore('worker', () => {
 
   const users = ref([])
-  const catalog = ref([])
+  const catalog = ref([{name:"Категория", id: "123", children:[{name:"Категория1", id: "1234", children:[{name:"Категория2", id: "1234"}], have_children:true,is_open: true}],have_children:true,is_open: true}])
   const show_branch_info = ref(false)
   const current_catalog = ref(null)
   const current_role = ref(null)
@@ -375,8 +375,24 @@ const removeUserStart = async () => {
   }
 
 
+const ClickArrow = (id) => {
+  console.log(id,'ClickArrow')
+  catalog.value.map((el) => {el = findAndChenchArrow(el, id); return el;})
+  // catalog.map(el => {if (el.id == value) el.is_open = !el.is_open; return el})
+}
+
+const findAndChenchArrow = (catalog, id) => {
+  if(catalog.id == id) {
+    catalog.is_open = !catalog.is_open;
+  }
+  if (catalog.children) {
+    catalog.children = catalog.children.map((el) => {el = findAndChenchArrow(el); return el})
+  }
+  return catalog;
+}
 
   return {
+    ClickArrow,
     removeUserStart,
     firstDayStart,
     moveBranch,

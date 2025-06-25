@@ -81,7 +81,7 @@ const insertBranch = () => {
                     <CatalogRow 
                         :row="branch"
                         :active_row="current_catalog" 
-                        @click_arrow="(value) => {catalog.map(el => {if (el.id == value) el.is_open = !el.is_open; return el})}" 
+                        @click_arrow="(value) => {store.ClickArrow(value)}" 
                         @click_row="(value) => {console.log(value); current_catalog = value; store.getUsers()}">
                     </CatalogRow>
             </article>

@@ -22,9 +22,10 @@ import CatalogRow from '@/views/WorkerCatalogView/components/CatalogRow.vue'
         <section v-if="props.row.have_children && props.row.is_open" class="child_block" style="width: 100%; transition: 600ms;" >
             <article 
                 v-for="child in props.row.children" style="width: 100%;" 
+                :key="child.id"
                 :class="{active:props.active_row?.id == props.row?.id}">
                 <CatalogRow :row="child" style="width: 100%;" @click_row="(value) => {$emit('click_row', value)}"
-                 @click_arrow="(value) => {$emit('click_arrow', value)}"></CatalogRow>
+                 @click_arrow="(value) => {$emit('click_arrow', value); console.log(value)}"></CatalogRow>
             </article>
         </section>
     </section> 
