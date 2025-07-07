@@ -1,5 +1,14 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import { useUserStore } from './stores/user.js'
+import { computed, onMounted} from 'vue'
+import { storeToRefs } from 'pinia';
+
+const store = useUserStore();
+const {
+  user
+} = storeToRefs(store);
+
 </script>
 
 <template>

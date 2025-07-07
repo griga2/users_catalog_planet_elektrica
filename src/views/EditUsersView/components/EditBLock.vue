@@ -51,7 +51,7 @@ const changeFile = async (file) => {
 
 const updateRole = async (role) => {
     current_user.value.Role = role;
-    store.updateRole();
+    store.updateUserRole();
 }
 
 const chengevis = () => {
@@ -82,13 +82,20 @@ const removeUser = () => {
     store.removeUserStart();
 }
 
+const hiringEmployer = () => {
+    store.hiringEmployer()
+}
+
 </script>
 
 <template>
     <main class="main_edit">
         <section class="activite_block">
+            <button @click="hiringEmployer">
+                Принят на работу
+            </button>
             <button @click="firstDayStart">
-                Вышел на первый день
+                Вышел в первый день
             </button>
             <button @click="removeUser">
                 Уволить
@@ -149,6 +156,7 @@ const removeUser = () => {
                     <span>Роль</span>
                     <n-select 
                         @input="(v) => {updateRole(v)}" 
+                        v-model:value="current_user.role.id"
                         :options="roles.map(el => {return {label:el.name,value:el.id}})" />
                 </article>
                 <article class="input_block">
@@ -260,6 +268,10 @@ const removeUser = () => {
 }
 
 .activite_block{
+    display: flex;
+    flex-direction: row;
+
+    gap: 10px;
 
 }
 

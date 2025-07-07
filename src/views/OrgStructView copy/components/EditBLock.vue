@@ -30,8 +30,17 @@ const  updateBranch = async () => {
 <template>
     <main class="main_edit_role">
         <section style="display: flex; flex-direction: column;" v-if="current_role != null">
-            {{ current_role.name }}
             <section style="width: 100%;">  
+                <article class="input_block">
+                        <span>Название роли</span>
+                        <!-- <n-select size="small" v-model:value="current_catalog.sity" :options="sity_options" placeholder=" "/> -->
+                        <n-input 
+                        size="small" 
+                        type="text"
+                        @input="() => {store.updateRole()}" 
+                        v-model:value="current_role.name" 
+                        placeholder=" "/>
+                </article>
             </section>
         </section>
     </main>
@@ -43,8 +52,8 @@ const  updateBranch = async () => {
 .input_block{
     width: 250px;
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    align-items: start;
     justify-content: start;
 }
 

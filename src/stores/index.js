@@ -16,6 +16,7 @@ export const useWorkerStore = defineStore('worker', () => {
   const roles = ref([]);
   const branch_buffer = ref(null)
   const finding = ref(false);
+  const login_user = ref(false);
 
   const insertBranch = async () => {
     let config = {
@@ -177,20 +178,28 @@ export const useWorkerStore = defineStore('worker', () => {
     current_user.value.Contacs = a.data;
   }
 
+  
+
   const updateUser = async () => {
-    console.log(current_user.value)
-    let config = {
-      method: 'put',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/user`,
-      data:{
+    console.log(current_user.value.MidName)
+    const data = {
+        last_name: current_user.value.LastName,
+        first_name: current_user.value.Name,
+        second_name: current_user.value.MidName,
         birthday: current_user.value.Birthday,
         status: current_user.value.Status,
         photo: current_user.value.Photo,
         sex: current_user.value.Sex,
         city: current_user.value.City,
         employment_date: current_user.value.EmploymentDate,
-      },
+        visible_user: current_user.value.visible_user,
+      };
+      console.log(data);
+    let config = {
+      method: 'put',
+      maxBodyLength: Infinity,
+      url: `${base_url}/catalog/user`,
+      data: data,
       params: {
         userId: current_user.value.ID
       }
@@ -238,7 +247,7 @@ export const useWorkerStore = defineStore('worker', () => {
     roles.value = a.data;
   }
 
-  const updateRole = async () => {
+  const updateUserRole = async () => {
     console.log(current_user.value)
     let config = {
       method: 'put',
@@ -278,15 +287,6 @@ export const useWorkerStore = defineStore('worker', () => {
     roles.value = a.data;
   }
 
-  const updateRoles = async () => {
-    let config = {
-      method: 'put',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/role`
-    }
-    const a = await axios.request(config);
-    roles.value = a.data;
-  }
 
   const uploadFile = async (image) => {
     console.log(image)
@@ -313,19 +313,17 @@ export const useWorkerStore = defineStore('worker', () => {
 
   const addUser = async () => {
     const data = {
-      departament: current_catalog.value.ID,
+      departament: current_catalog.value.id,
     };
-    console.log(data,'add user')
+    console.log(data,'add user aaa')
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
       url: `${base_url}/catalog/add_user`,
       data: data,
-      headers:{
-        'Content-Type': 'multipart/form-data;',
-      }
+
     }
-    const rez  = await axios.request(
+    const rez = await axios.request(
       config
     );
     await getUsers();
@@ -357,7 +355,6 @@ export const useWorkerStore = defineStore('worker', () => {
       url: `${base_url}/catalog/first_day_start/` + current_user.value.ID,
       data: body,
       headers:{
-        'Content-Type': 'multipart/form-data;',
       }
     }
     const rez  = await axios.request(
@@ -366,13 +363,17 @@ export const useWorkerStore = defineStore('worker', () => {
   }
 
 const removeUserStart = async () => {
+
+  const body = {
+      em_id: current_user.value.ID,
+    }
+    
   let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: `${base_url}/catalog/first_day_start/` + current_user.value.ID,
+      url: `${base_url}/catalog/remove_user/` + current_user.value.ID,
       data: body,
       headers:{
-        'Content-Type': 'multipart/form-data;',
       }
     }
     const rez  = await axios.request(
@@ -380,6 +381,26 @@ const removeUserStart = async () => {
     );
   }
 
+  const hiringEmployer = async () => {
+
+    const body = {
+      em_id: current_user.value.ID,
+      roleID: current_user.value.role.id,
+      hrMail: login_user.value?.contacts?.find(el => el[1] == 'email')[1] || null
+    }
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${base_url}/catalog/hiring_employer`,
+      data: body,
+      headers:{
+      }
+    }
+    const rez  = await axios.request(
+      config
+    );
+  }
 
 const ClickArrow = (id) => {
   console.log(id,'ClickArrow')
@@ -399,8 +420,45 @@ const findAndChenchArrow = (catalog, id) => {
   return catalog;
 }
 
+const addRole = async () => {
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${base_url}/catalog/addRole`,
+      headers:{
+      }
+    }
+    const rez  = await axios.request(
+      config
+    );
+    if(rez.status === 201) {
+      await getRoles();
+    }
+    console.log(rez.data.raw[0].id)
+    current_role.value = roles.value.find((el) => {console.log(el.id); return rez.data.raw[0].id == el.id});
+}
+
+const updateRole = async () => {
+    const data = {
+      id: current_role.value.id,
+      name: current_role.value.name
+    }
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${base_url}/catalog/updateRole`,
+      data: data
+    }
+    const rez  = await axios.request(
+      config
+    );
+}
+
+
   return {
     ClickArrow,
+    updateRole,
     removeUserStart,
     firstDayStart,
     moveBranch,
@@ -414,10 +472,10 @@ const findAndChenchArrow = (catalog, id) => {
     catalog,
     show_branch_info,
     current_catalog,
+    addRole,
     getBranches,
     users,
     getBranch,
-    updateRole,
     getUsers,
     open_time_branch,
     SearchUser,
@@ -427,8 +485,11 @@ const findAndChenchArrow = (catalog, id) => {
     roles,
     getRoles,
     current_role,
+    updateUserRole,
     finding,
     moveRoles,
-    addUser
+    hiringEmployer,
+    addUser,
+    
   }
 })

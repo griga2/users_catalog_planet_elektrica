@@ -24,10 +24,6 @@ onMounted(() => {
     store.getRoles();
 })
 
-const addRole = () => {
-    store.addRoles();
-}
-
 const deleteRole = () => {
     store.deleteRoles();
 }
@@ -45,7 +41,7 @@ const moveRole = (axis) => {
             <section class="roles_list">
                 <section class="buttun_row" v-if="route.name == 'edit_roles'"
                         style="background-color: white; position: sticky; top: -20px; z-index: 20; padding: 5px; width: 100%;">
-                    <article @click="addRole()">
+                    <article @click="store.addRole()">
                         <img height="25px" src="../../assets/plus.svg">
                     </article>
                     <article @click="deleteRole()">

@@ -1,5 +1,5 @@
 <script setup>
-    import {useWorkerStore} from '../../stores/index.js'
+import {useWorkerStore} from '../../stores/index.js'
 import { computed, onMounted} from 'vue'
 import WorkerCard from './components/WorkerCard.vue';
 import { storeToRefs } from 'pinia';
