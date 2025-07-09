@@ -44,6 +44,15 @@ const chengevis = () => {
 
 const img_block = ref(null)
 
+const chechInleave = () => {
+    const nowDate = new Date()
+    if (props.user.LeaveStart && props.user.LeaveFinish) {
+        return Date.parse(props.user.LeaveStart) < nowDate && Date.parse(props.user.LeaveFinish) > nowDate
+    }
+    
+    return false;
+
+}
 onMounted(() => {
     // сonsole.log(props.user);
     // console.log(img_block.value);
@@ -69,8 +78,8 @@ const vis_ing = ref(true);
                     <section class="contact_block">
                         <article><h2>{{props.user?.full_name}}</h2></article>
                         <article class="work" 
-                        v-if="finding"
-                        @click="emits('click_dep',{depID:props.user?.DepartamentID, userID: props.user.ID})"><span>{{props.user?.department_name}}</span></article>
+                            v-if="finding"
+                            @click="emits('click_dep',{depID:props.user?.DepartamentID, userID: props.user.ID})"><span>{{props.user?.department_name}}</span></article>
                         <article class="work"><span>{{props.user?.role?.name}}</span></article>
                         <section style="display: flex; flex-direction: column; flex-wrap: wrap; width: 100%; max-height: 120px; margin: 10px;" >
                             <article v-for="contact of props.user.Contacs"> 
@@ -95,9 +104,13 @@ const vis_ing = ref(true);
                 <section style="width: 100%;">
                         <article><h3>{{props.user?.number}}</h3></article>
                 </section>
+                <section v-if="chechInleave()" style="padding: 20px 5px; margin-top: -25px;">
+                    <h4>В отпуске с {{ $props.user.LeaveStart?.substring(5, 10) }} по {{ $props.user.LeaveFinish?.substring(5, 10) }}</h4>
+                    <span>{{ $props.user.LeaveText }}</span>
+                </section>
             </section>
         </section>
-    </section>
+    </section>  
 
 </template>
 

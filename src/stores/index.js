@@ -16,7 +16,7 @@ export const useWorkerStore = defineStore('worker', () => {
   const roles = ref([]);
   const branch_buffer = ref(null)
   const finding = ref(false);
-  const login_user = ref(false);
+  const login_user = ref(false); 
 
   const insertBranch = async () => {
     let config = {
@@ -178,8 +178,6 @@ export const useWorkerStore = defineStore('worker', () => {
     current_user.value.Contacs = a.data;
   }
 
-  
-
   const updateUser = async () => {
     console.log(current_user.value.MidName)
     const data = {
@@ -193,6 +191,10 @@ export const useWorkerStore = defineStore('worker', () => {
         city: current_user.value.City,
         employment_date: current_user.value.EmploymentDate,
         visible_user: current_user.value.visible_user,
+        on_leave: current_user.value.OnLeave,
+        leave_text: current_user.value.LeaveText,
+        leave_start: current_user.value.LeaveStart,
+        leave_finish: current_user.value.LeaveFinish,
       };
       console.log(data);
     let config = {
@@ -287,7 +289,6 @@ export const useWorkerStore = defineStore('worker', () => {
     roles.value = a.data;
   }
 
-
   const uploadFile = async (image) => {
     console.log(image)
     const body = new FormData();
@@ -329,24 +330,6 @@ export const useWorkerStore = defineStore('worker', () => {
     await getUsers();
   }
 
-  // console.log(image)
-  //       const body = new FormData();
-  //       body.append('image', image)
-  //       console.log(body)
-
-  //       let config = {
-  //           method: 'post',
-  //           maxBodyLength: Infinity,
-  //           url: `${base_url}/api/image?articul=${id}`,
-  //           data: body,
-  //           headers:{
-  //               'Content-Type': 'multipart/form-data;',
-  //           }
-  //       };
-
-  //       const rez  = await axios.request(
-  //           config
-  //       );
 
   const firstDayStart = async () => {
     let config = {
@@ -362,7 +345,7 @@ export const useWorkerStore = defineStore('worker', () => {
     );
   }
 
-const removeUserStart = async () => {
+  const removeUserStart = async () => {
 
   const body = {
       em_id: current_user.value.ID,
@@ -402,13 +385,13 @@ const removeUserStart = async () => {
     );
   }
 
-const ClickArrow = (id) => {
+  const ClickArrow = (id) => {
   console.log(id,'ClickArrow')
   catalog.value = catalog.value.map((el) => {el = findAndChenchArrow(el, id); return el;})
   // catalog.map(el => {if (el.id == value) el.is_open = !el.is_open; return el})
-}
+  }
 
-const findAndChenchArrow = (catalog, id) => {
+  const findAndChenchArrow = (catalog, id) => {
   // console.log(catalog.id,id)
   
   if(catalog.id == id) {
@@ -418,42 +401,42 @@ const findAndChenchArrow = (catalog, id) => {
     catalog.children = catalog.children.map((el) => {el = findAndChenchArrow(el,id); return el})
   }
   return catalog;
-}
+  }
 
-const addRole = async () => {
+  const addRole = async () => {
 
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/addRole`,
-      headers:{
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `${base_url}/catalog/addRole`,
+        headers:{
+        }
       }
-    }
-    const rez  = await axios.request(
-      config
-    );
-    if(rez.status === 201) {
-      await getRoles();
-    }
-    console.log(rez.data.raw[0].id)
-    current_role.value = roles.value.find((el) => {console.log(el.id); return rez.data.raw[0].id == el.id});
-}
+      const rez  = await axios.request(
+        config
+      );
+      if(rez.status === 201) {
+        await getRoles();
+      }
+      console.log(rez.data.raw[0].id)
+      current_role.value = roles.value.find((el) => {console.log(el.id); return rez.data.raw[0].id == el.id});
+  }
 
-const updateRole = async () => {
-    const data = {
-      id: current_role.value.id,
-      name: current_role.value.name
-    }
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/updateRole`,
-      data: data
-    }
-    const rez  = await axios.request(
-      config
-    );
-}
+  const updateRole = async () => {
+      const data = {
+        id: current_role.value.id,
+        name: current_role.value.name
+      }
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `${base_url}/catalog/updateRole`,
+        data: data
+      }
+      const rez  = await axios.request(
+        config
+      );
+  }
 
 
   return {

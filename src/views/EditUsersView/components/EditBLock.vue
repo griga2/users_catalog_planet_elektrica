@@ -112,7 +112,7 @@ const hiringEmployer = () => {
                                     @input="() => {updateUser()}" 
                                     size="small" 
                                     type="text"
-                                    v-model:value="current_user.MidName" 
+                                    v-model:value="current_user.LastName" 
                                     placeholder=" "/>
                             </article>
                             <article class="input_block">
@@ -129,7 +129,7 @@ const hiringEmployer = () => {
                                     @input="() => {updateUser()}"
                                     size="small" 
                                     type="text"
-                                    v-model:value="current_user.LastName" 
+                                    v-model:value="current_user.MidName" 
                                     placeholder=" "/>
                             </article>               
                         </section>
@@ -194,22 +194,23 @@ const hiringEmployer = () => {
                 </article>
             </section>
             <section class="info_column_block" style="width: 100%;">
-                <span class="header">Отпуск</span>
-                <section class="info_block" style="width: 100%;">
+                <span class="header">Отпуск
+                    <n-checkbox v-model:checked="current_user.OnLeave"
+                        @click="updateUser()"/>
+                </span><br>
+                <section class="info_block" style="width: 100%;" v-if="current_user.OnLeave">
                     <article style="display: flex; flex-direction: row;" >
                         <article style="display: flex; flex-direction: row; gap: 10px;">
                             <n-input
-                            @input="() => {updateUser()}" 
-                            v-model:value="current_user.OtpuscStart"
-                            @change=""
+                            v-model:value="current_user.LeaveStart"
+                            @change="updateUser()"
                             type="date"
-                            placeholder=" "
+                            placeholder=""
                         /><n-input
-                            @input="() => {updateUser()}" 
-                            v-model:value="current_user.OtpuscFinish"
-                            @change=""
+                            v-model:value="current_user.LeaveFinish"
+                            @change="updateUser()"
                             type="date"
-                            placeholder=" "
+                            placeholder=""
                         />
                         </article>
                     </article>
@@ -217,7 +218,7 @@ const hiringEmployer = () => {
                         <span>Комментарий к отпуску</span>
                         <n-input
                             @input="() => {updateUser()}" 
-                            v-model:value="current_user.OtpusctText"
+                            v-model:value="current_user.LeaveText"
                             @change=""
                             type="textarea"
                             placeholder=" "
