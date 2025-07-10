@@ -195,6 +195,7 @@ export const useWorkerStore = defineStore('worker', () => {
         leave_text: current_user.value.LeaveText,
         leave_start: current_user.value.LeaveStart,
         leave_finish: current_user.value.LeaveFinish,
+        bio: current_user.value.Bio
       };
       console.log(data);
     let config = {

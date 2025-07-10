@@ -248,7 +248,7 @@ const hiringEmployer = () => {
                         <span>Примечания</span>
                         <n-input
                             @input="() => {updateUser()}" 
-                            v-model:value="current_user.Status"
+                            v-model:value="current_user.Bio"
                             @change=""
                             type="textarea"
                             placeholder=" "

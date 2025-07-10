@@ -50,7 +50,7 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  const UpdateBio = async (bio, status) => {
+  const UpdateBio = async (bio) => {
     console.log(bio);
     if (user.token) {
         let config = {
@@ -62,8 +62,7 @@ export const useUserStore = defineStore('user', () => {
             },
             data:{
               userId: user.id,
-              bio: bio,
-              statis: status
+              bio: bio
             }
           }
           const a = await axios.request(config);

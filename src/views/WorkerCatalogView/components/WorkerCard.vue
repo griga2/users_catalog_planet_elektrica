@@ -99,8 +99,8 @@ const vis_ing = ref(true);
                         </article>
                     </section>
                 </section>
-                <section class="status_block" v-if="props.user?.Status">
-                    {{ props.user?.Status }}
+                <section class="status_block" v-if="props.user?.Bio">
+                    {{ props.user?.Bio }}
                 </section>
                 <section style="width: 100%;">
                         <article><h3>{{props.user?.number}}</h3></article>
