@@ -12,8 +12,8 @@ const {
 } = storeToRefs(store); 
 
     onMounted(async () => {
-    await store.getUser()
-    //   if (user.value) 
+        await store.getUser()
+        //   if (user.value) 
     })
     const pass = ref('')
     const login = ref('')
@@ -70,7 +70,7 @@ const {
             placeholder="Описание">
         </n-input>
         
-        <n-button @click="store.UpdateBio(bio)">
+        <n-button @click="store.UpdateBio(bio, bio)">
             Сохранить
         </n-button >
     

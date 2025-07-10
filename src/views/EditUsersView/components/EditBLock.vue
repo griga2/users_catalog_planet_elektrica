@@ -135,8 +135,8 @@ const hiringEmployer = () => {
                         </section>
                     </section>
                     <section class="photo" style="z-index: 10; padding: 0px; margin: 0px; background-color: white;">
-                        <img v-if="vis_ing" ref="img_block" height="200px" 
-                            style=" border-radius: 8px 0px 0px 8px; object-fit: contain;" 
+                        <img v-if="vis_ing" ref="img_block" height="160px" 
+                            style=" border-radius: 8px 0px 0px 8px; object-fit: cover; max-width: 200px;" 
                             :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + current_user?.Photo + '?t=' + new Date().getTime()">
                         <img v-if="!vis_ing" src="../../../assets/userProfile.svg" 
                             height="200px" style="border-radius: 6px 0px 0px 6px;">
