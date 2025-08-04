@@ -26,7 +26,10 @@ const copy = (value) => {
 
 const GetBirthdayday = (_date) => {
     // console.log(typeof (_date))
-    const date = new Date(_date)
+    const date = new Date(_date);
+    console.log(date.getDate().toString());
+    console.log(date);
+    // 
     return date?.getDate().toString().padStart(2,'0') + '.' + (date?.getMonth() + 1).toString().padStart(2,'0');
 }
 
@@ -99,7 +102,7 @@ const vis_ing = ref(true);
                         </article>
                     </section>
                 </section>
-                <section class="status_block" v-if="props.user?.Bio">
+                <section class="status_block" style="font-size: 22px;" v-if="props.user?.Bio">
                     {{ props.user?.Bio }}
                 </section>
                 <section style="width: 100%;">
