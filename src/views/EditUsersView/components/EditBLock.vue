@@ -51,7 +51,7 @@ const changeFile = async (file) => {
 
 const updateRole = async (role) => {
     current_user.value.Role = role;
-    store.updateRole();
+    store.updateUserRole();
 }
 
 const chengevis = () => {
@@ -82,13 +82,20 @@ const removeUser = () => {
     store.removeUserStart();
 }
 
+const hiringEmployer = () => {
+    store.hiringEmployer()
+}
+
 </script>
 
 <template>
     <main class="main_edit">
         <section class="activite_block">
+            <button @click="hiringEmployer">
+                Принят на работу
+            </button>
             <button @click="firstDayStart">
-                Вышел на первый день
+                Вышел в первый день
             </button>
             <button @click="removeUser">
                 Уволить
@@ -105,7 +112,7 @@ const removeUser = () => {
                                     @input="() => {updateUser()}" 
                                     size="small" 
                                     type="text"
-                                    v-model:value="current_user.MidName" 
+                                    v-model:value="current_user.LastName" 
                                     placeholder=" "/>
                             </article>
                             <article class="input_block">
@@ -122,14 +129,14 @@ const removeUser = () => {
                                     @input="() => {updateUser()}"
                                     size="small" 
                                     type="text"
-                                    v-model:value="current_user.LastName" 
+                                    v-model:value="current_user.MidName" 
                                     placeholder=" "/>
                             </article>               
                         </section>
                     </section>
                     <section class="photo" style="z-index: 10; padding: 0px; margin: 0px; background-color: white;">
-                        <img v-if="vis_ing" ref="img_block" height="200px" 
-                            style=" border-radius: 8px 0px 0px 8px; object-fit: contain;" 
+                        <img v-if="vis_ing" ref="img_block" height="160px" 
+                            style=" border-radius: 8px 0px 0px 8px; object-fit: cover; max-width: 200px;" 
                             :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + current_user?.Photo + '?t=' + new Date().getTime()">
                         <img v-if="!vis_ing" src="../../../assets/userProfile.svg" 
                             height="200px" style="border-radius: 6px 0px 0px 6px;">
@@ -149,6 +156,7 @@ const removeUser = () => {
                     <span>Роль</span>
                     <n-select 
                         @input="(v) => {updateRole(v)}" 
+                        v-model:value="current_user.role.id"
                         :options="roles.map(el => {return {label:el.name,value:el.id}})" />
                 </article>
                 <article class="input_block">
@@ -186,22 +194,23 @@ const removeUser = () => {
                 </article>
             </section>
             <section class="info_column_block" style="width: 100%;">
-                <span class="header">Отпуск</span>
-                <section class="info_block" style="width: 100%;">
+                <span class="header">Отпуск
+                    <n-checkbox v-model:checked="current_user.OnLeave"
+                        @click="updateUser()"/>
+                </span><br>
+                <section class="info_block" style="width: 100%;" v-if="current_user.OnLeave">
                     <article style="display: flex; flex-direction: row;" >
                         <article style="display: flex; flex-direction: row; gap: 10px;">
                             <n-input
-                            @input="() => {updateUser()}" 
-                            v-model:value="current_user.OtpuscStart"
-                            @change=""
+                            v-model:value="current_user.LeaveStart"
+                            @change="updateUser()"
                             type="date"
-                            placeholder=" "
+                            placeholder=""
                         /><n-input
-                            @input="() => {updateUser()}" 
-                            v-model:value="current_user.OtpuscFinish"
-                            @change=""
+                            v-model:value="current_user.LeaveFinish"
+                            @change="updateUser()"
                             type="date"
-                            placeholder=" "
+                            placeholder=""
                         />
                         </article>
                     </article>
@@ -209,7 +218,7 @@ const removeUser = () => {
                         <span>Комментарий к отпуску</span>
                         <n-input
                             @input="() => {updateUser()}" 
-                            v-model:value="current_user.OtpusctText"
+                            v-model:value="current_user.LeaveText"
                             @change=""
                             type="textarea"
                             placeholder=" "
@@ -239,7 +248,7 @@ const removeUser = () => {
                         <span>Примечания</span>
                         <n-input
                             @input="() => {updateUser()}" 
-                            v-model:value="current_user.Status"
+                            v-model:value="current_user.Bio"
                             @change=""
                             type="textarea"
                             placeholder=" "
@@ -260,6 +269,10 @@ const removeUser = () => {
 }
 
 .activite_block{
+    display: flex;
+    flex-direction: row;
+
+    gap: 10px;
 
 }
 

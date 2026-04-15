@@ -35,8 +35,8 @@ const add_user = () => {
 
 <template>
     <main style="overflow-y: scroll;" class="margined_list_block">
-        <article id="add_user_bt" @click="add_user">
-        Добавить пользывателя<img height="32px" src="../../../assets/plus.svg">
+        <article id="add_user_bt" @click="add_user" v-if="current_catalog">
+        Добавить пользователя<img style="margin-left: 4px" height="24px" src="../../../assets/plus.svg">
         </article>
 
         <article v-for="worker of users" :key="worker.id"  >

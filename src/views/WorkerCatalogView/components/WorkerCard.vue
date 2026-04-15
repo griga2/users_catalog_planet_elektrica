@@ -26,7 +26,10 @@ const copy = (value) => {
 
 const GetBirthdayday = (_date) => {
     // console.log(typeof (_date))
-    const date = new Date(_date)
+    const date = new Date(_date);
+    console.log(date.getDate().toString());
+    console.log(date);
+    // 
     return date?.getDate().toString().padStart(2,'0') + '.' + (date?.getMonth() + 1).toString().padStart(2,'0');
 }
 
@@ -44,6 +47,15 @@ const chengevis = () => {
 
 const img_block = ref(null)
 
+const chechInleave = () => {
+    const nowDate = new Date()
+    if (props.user.LeaveStart && props.user.LeaveFinish) {
+        return Date.parse(props.user.LeaveStart) < nowDate && Date.parse(props.user.LeaveFinish) > nowDate
+    }
+    
+    return false;
+
+}
 onMounted(() => {
     // сonsole.log(props.user);
     // console.log(img_block.value);
@@ -60,7 +72,8 @@ const vis_ing = ref(true);
     <section class="prod_cadr" :class="{open:props.user.visible_dop}">
         <section style="display: flex; flex: 35% 65%">
             <section class="photo" style="z-index: 10; padding: 0px; margin: 0px; background-color: white;">
-                <img v-if="vis_ing" ref="img_block" height="160px" style=" border-radius: 8px 0px 0px 8px; object-fit: contain;" :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + $props.user?.Photo + '?t=' + new Date().getTime()">
+                <img v-if="vis_ing" ref="img_block" height="160px" style=" border-radius: 8px 0px 0px 8px; object-fit: cover;  max-width: 160px;" 
+                :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + $props.user?.Photo + '?t=' + new Date().getTime()">
                 <img v-if="!vis_ing" src="../../../assets/userProfile.svg" height="160px" style="border-radius: 8px 0px 0px 8px;">
                 <!-- <img v-if="!vis_ing" :src="`/img/bookicon.svg`" alt="" style="width: 100px; height: 70px;"> -->
             </section>
@@ -69,8 +82,8 @@ const vis_ing = ref(true);
                     <section class="contact_block">
                         <article><h2>{{props.user?.full_name}}</h2></article>
                         <article class="work" 
-                        v-if="finding"
-                        @click="emits('click_dep',{depID:props.user?.DepartamentID, userID: props.user.ID})"><span>{{props.user?.department_name}}</span></article>
+                            v-if="finding"
+                            @click="emits('click_dep',{depID:props.user?.DepartamentID, userID: props.user.ID})"><span>{{props.user?.department_name}}</span></article>
                         <article class="work"><span>{{props.user?.role?.name}}</span></article>
                         <section style="display: flex; flex-direction: column; flex-wrap: wrap; width: 100%; max-height: 120px; margin: 10px;" >
                             <article v-for="contact of props.user.Contacs"> 
@@ -89,15 +102,19 @@ const vis_ing = ref(true);
                         </article>
                     </section>
                 </section>
-                <section class="status_block" v-if="props.user?.Status">
-                    {{ props.user?.Status }}
+                <section class="status_block" style="font-size: 22px;" v-if="props.user?.Bio">
+                    {{ props.user?.Bio }}
                 </section>
                 <section style="width: 100%;">
                         <article><h3>{{props.user?.number}}</h3></article>
                 </section>
+                <section v-if="chechInleave()" style="padding: 20px 5px; margin-top: -25px;">
+                    <h4>В отпуске с {{ $props.user.LeaveStart?.substring(5, 10) }} по {{ $props.user.LeaveFinish?.substring(5, 10) }}</h4>
+                    <span>{{ $props.user.LeaveText }}</span>
+                </section>
             </section>
         </section>
-    </section>
+    </section>  
 
 </template>
 

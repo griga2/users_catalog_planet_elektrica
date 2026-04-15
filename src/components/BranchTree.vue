@@ -77,8 +77,12 @@ const insertBranch = () => {
                     <img height="25px" v-else src="../assets/dpast.svg">
                 </article>
             </section>
-            <article v-for="branch of catalog" v-bind:key="branch.id" >
+            <article v-for="branch of catalog.filter(el => {
+                if (route.name == 'catalog' && el.id == '64E1B3E8-0EC2-4C89-A3CE-F68F4DE515A1') return false;
+                return true;
+            })" v-bind:key="branch.id" >
                     <CatalogRow 
+                    
                         :row="branch"
                         :active_row="current_catalog" 
                         @click_arrow="(value) => {store.ClickArrow(value)}" 
