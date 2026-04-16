@@ -1,6 +1,11 @@
 <script setup>
     import { defineProps, defineModel, onMounted, ref,defineEmits } from 'vue';
-    const props = defineProps(['id','type','target_value']);
+    import { debug } from '@/utils/debug';
+    const props = defineProps({
+        id: { type: [String, Number], required: true },
+        type: { type: String, required: true },
+        target_value: { type: String, default: '' }
+    });
     const model = defineModel();
     const emits = defineEmits(['change_contact']);
     const SwithTitle = () => {
@@ -13,7 +18,7 @@
     }
 
     onMounted(() => {
-        console.log(props.target_value);
+        debug(props.target_value);
     })
 </script>
 

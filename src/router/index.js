@@ -3,7 +3,8 @@ import WorkerCatalogView from '@/views/WorkerCatalogView/WorkerCatalogView.vue'
 import OrgStructView from '@/views/OrgStructView/OrgStructView.vue'
 import LayoutView from '@/views/LayoutView/LayoutView.vue'
 import EditUsersView from '@/views/EditUsersView/EditUsersView.vue'
-import RolesView from '@/views/OrgStructView copy/RolesView.vue'
+import RolesView from '@/views/RolesView/RolesView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -32,6 +33,22 @@ const router = createRouter({
     },
 
   ]
+})
+
+// Guard для защиты маршрутов редактирования
+const protectedRoutes = ['/edit_struct', '/edit_workers', '/edit_roles']
+
+router.beforeEach((to, from, next) => {
+  if (protectedRoutes.includes(to.path)) {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      next('/catalog')
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

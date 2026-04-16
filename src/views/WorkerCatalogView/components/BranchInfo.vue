@@ -1,9 +1,12 @@
 <script setup>
 import WorkTimeComponent from '@/components/WorkTimeComponent.vue';
+import { debug } from '@/utils/debug';
 
-const props = defineProps(["branch"])
+const props = defineProps({
+  branch: { type: Object, required: true }
+})
 
-console.log(props.branch)
+debug(props.branch)
 
 const copy = (value) => {
     navigator.clipboard.writeText(value)
@@ -11,7 +14,7 @@ const copy = (value) => {
             
         })
         .catch(err => {
-            console.log('Something went wrong', err);
+            debug('Something went wrong', err);
         });
 }
 

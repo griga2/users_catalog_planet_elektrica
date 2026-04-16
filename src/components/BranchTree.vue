@@ -1,9 +1,10 @@
 <script setup>
 import {useWorkerStore} from '../stores/index'
-import { computed, onMounted} from 'vue'
+import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia';
 import { useRoute } from 'vue-router';
 import CatalogRow from './CatalogRow.vue'
+import { debug } from '@/utils/debug'
 const store = useWorkerStore();
 const route = useRoute();
 const {
@@ -41,12 +42,12 @@ const moveBranch = (direction) => {
 }
 
 const сutBranch = () => {
-    console.log('cut')
+    debug('cut')
     branch_buffer.value = current_catalog.value.id;
 }
 
 const insertBranch = () => {
-    console.log('insert')
+    debug('insert')
     store.insertBranch();
     current_catalog.value = null;
     branch_buffer.value = null;
@@ -86,7 +87,7 @@ const insertBranch = () => {
                         :row="branch"
                         :active_row="current_catalog" 
                         @click_arrow="(value) => {store.ClickArrow(value)}" 
-                        @click_row="(value) => {console.log(value); current_catalog = value; store.getUsers()}">
+                        @click_row="(value) => {debug(value); current_catalog = value; store.getUsers()}">
                     </CatalogRow>
             </article>
     </section>

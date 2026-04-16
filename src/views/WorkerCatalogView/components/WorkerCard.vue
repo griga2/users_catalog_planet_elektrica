@@ -1,7 +1,10 @@
 <script setup>
 import { defineProps, defineEmits, ref, onMounted, onUpdated } from 'vue';
 import IconContact from './IconContact.vue'
-const props = defineProps(['user'])
+import { debug } from '@/utils/debug'
+const props = defineProps({
+  user: { type: Object, required: true }
+})
 const emits = defineEmits(['click_open_dop', 'click', 'click_dep'])
 
 
@@ -20,21 +23,21 @@ const copy = (value) => {
         })
         .catch(err => {
             // возможно, пользователь не дал разрешение на чтение данных из буфера обмена
-            console.log('Something went wrong', err);
+            debug('Something went wrong', err);
         });
 }
 
 const GetBirthdayday = (_date) => {
-    // console.log(typeof (_date))
+    // debug(typeof (_date))
     const date = new Date(_date);
-    console.log(date.getDate().toString());
-    console.log(date);
-    // 
+    debug(date.getDate().toString());
+    debug(date);
+    //
     return date?.getDate().toString().padStart(2,'0') + '.' + (date?.getMonth() + 1).toString().padStart(2,'0');
 }
 
 const openMailClient = (email) => {
-    console.log('email')
+    debug('email')
     window.location.href = "mailto:" + email;
 }
 
@@ -59,8 +62,8 @@ const chechInleave = () => {
 onMounted(() => {
     // сonsole.log(props.user);
     // console.log(img_block.value);
-    console.log(props.user?.Photo?.length);
-    console.log('https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + props.user.Photo + '?t=' + new Date().getTime());
+    debug(props.user?.Photo?.length);
+    debug(import.meta.env.VITE_S3_URL + props.user.Photo + '?t=' + new Date().getTime());
     img_block.value.onerror = chengevis;
     vis_ing.value = true;
 })
@@ -72,8 +75,8 @@ const vis_ing = ref(true);
     <section class="prod_cadr" :class="{open:props.user.visible_dop}">
         <section style="display: flex; flex: 35% 65%">
             <section class="photo" style="z-index: 10; padding: 0px; margin: 0px; background-color: white;">
-                <img v-if="vis_ing" ref="img_block" height="160px" style=" border-radius: 8px 0px 0px 8px; object-fit: cover;  max-width: 160px;" 
-                :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + $props.user?.Photo + '?t=' + new Date().getTime()">
+                <img v-if="vis_ing" ref="img_block" height="160px" style=" border-radius: 8px 0px 0px 8px; object-fit: cover;  max-width: 160px;"
+                :src="import.meta.env.VITE_S3_URL + $props.user?.Photo + '?t=' + new Date().getTime()">
                 <img v-if="!vis_ing" src="../../../assets/userProfile.svg" height="160px" style="border-radius: 8px 0px 0px 8px;">
                 <!-- <img v-if="!vis_ing" :src="`/img/bookicon.svg`" alt="" style="width: 100px; height: 70px;"> -->
             </section>

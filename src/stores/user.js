@@ -1,94 +1,85 @@
-import { ref, computed, reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
-import axios from 'axios';
+import apiClient from '@/api/client'
+import { debug } from '@/utils/debug'
 
 export const useUserStore = defineStore('user', () => {
-  
+
   const base_url = import.meta.env.VITE_SERVER_HOST
   const user = reactive({
     role: null,
     token: null,
     name: null,
     id: null
-  });
+  })
 
   const userExit = () => {
-    user.id = null;
-    user.name = null;
-    user.role = null;
-    user.token = null;
-
-    localStorage.removeItem('token');
+    user.id = null
+    user.name = null
+    user.role = null
+    user.token = null
+    localStorage.removeItem('token')
   }
 
-  const setUser = async (token) => {
-    console.log(token)
-    await localStorage.setItem('token',token);
+  const setUser = (token) => {
+    debug('setUser token:', token)
+    localStorage.setItem('token', token)
   }
 
-  const PutToken = async () => {
-    user.token = await (JSON.stringify(localStorage.getItem('token')));
-    console.log(user.token)
+  const putToken = () => {
+    const token = localStorage.getItem('token')
+    user.token = token
+    debug('putToken:', user.token)
   }
 
   const getUser = async () => {
-      if (!user.token) await PutToken();
-      console.log(user.token)
-      if (user.token) {
-        let config = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: `${base_url}/auth/getUserDate`,
-            headers:{
-              'Authorization':  user.token,
-            }
-          }
-          const a = await axios.request(config);
-      user.name = a.data.name;
-      user.role = a.data.role;
-      user.id = a.data.id;
+    if (!user.token) putToken()
+    debug('getUser token:', user.token)
+    if (user.token) {
+      try {
+        const response = await apiClient.post('/auth/getUserDate')
+        user.name = response.data.name
+        user.role = response.data.role
+        user.id = response.data.id
+      } catch (error) {
+        debug('Error getUser:', error)
+        throw error
+      }
     }
   }
 
   const UpdateBio = async (bio) => {
-    console.log(bio);
+    debug('UpdateBio:', bio)
     if (user.token) {
-        let config = {
-            method: 'put',
-            maxBodyLength: Infinity,
-            url: `${base_url}/catalog/updateBio`,
-            headers:{
-              'Authorization':  user.token,
-            },
-            data:{
-              userId: user.id,
-              bio: bio
-            }
-          }
-          const a = await axios.request(config);
+      try {
+        await apiClient.put('/catalog/updateBio', {
+          userId: user.id,
+          bio: bio
+        })
+      } catch (error) {
+        debug('Error UpdateBio:', error)
+        throw error
+      }
     }
   }
 
-  
-
   const Login = async (login, pass) => {
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: `${base_url}/auth/loginUser`,
-      data: {
+    try {
+      const response = await apiClient.post('/auth/loginUser', {
         login: login,
         password: pass,
+      })
+
+      if (response.data) {
+        setUser(response.data.access_token)
+        user.token = response.data.access_token
       }
-    }
-    const a = await axios.request(config)
 
-    if (a.data) {
-      await setUser(a.data.access_token);
-      user.token = a.data.access_token;
+      await getUser()
+    } catch (error) {
+      debug('Error Login:', error)
+      throw error
     }
-
-    await getUser();
   }
 
   return {

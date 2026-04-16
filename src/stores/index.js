@@ -1,143 +1,155 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import axios from "axios"
-import { find } from 'naive-ui/es/_utils/cssr'
+import apiClient from '@/api/client'
+import { debug } from '@/utils/debug'
 
 const base_url = import.meta.env.VITE_SERVER_HOST
+
 export const useWorkerStore = defineStore('worker', () => {
 
   const users = ref([])
-  const catalog = ref([{name:"Категория", id: "123", children:[{name:"Категория1", id: "1234", children:[{name:"Категория2", id: "1234"}], have_children:true,is_open: true}],have_children:true,is_open: true}])
+  const catalog = ref([])
   const show_branch_info = ref(false)
   const current_catalog = ref(null)
   const current_role = ref(null)
   const current_user = ref(null)
   const open_time_branch = ref([])
-  const roles = ref([]);
+  const roles = ref([])
   const branch_buffer = ref(null)
-  const finding = ref(false);
-  const login_user = ref(false); 
+  const finding = ref(false)
+  const login_user = ref(null)
+
+  // Loading states
+  const isLoading = ref(false)
+  const isUpdating = ref(false)
 
   const insertBranch = async () => {
-    let config = {
-      method: 'put',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/insertBranch`,
-      params:{
-        newFatherId: current_catalog.value.id,
-        branchId: branch_buffer.value  
-      }
+    try {
+      isLoading.value = true
+      const response = await apiClient.put('/catalog/insertBranch', null, {
+        params: {
+          newFatherId: current_catalog.value.id,
+          branchId: branch_buffer.value
+        }
+      })
+      catalog.value = response.data
+    } catch (error) {
+      debug('Error insertBranch:', error)
+      throw error
+    } finally {
+      isLoading.value = false
     }
-    const a = await axios.request(config);
-    catalog.value = a.data;
   }
 
   const moveBranch = async (direction) => {
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/moveBranch`,
-      params:{
-        branchId: current_catalog.value.id,
-        direction: direction == 'down' ? -1 : 1,
-      }
+    try {
+      await apiClient.get('/catalog/moveBranch', {
+        params: {
+          branchId: current_catalog.value.id,
+          direction: direction === 'down' ? -1 : 1,
+        }
+      })
+    } catch (error) {
+      debug('Error moveBranch:', error)
+      throw error
     }
-    const a = await axios.request(config);
   }
-  
+
   const deleteBranch = async () => {
-    let config = {
-      method: 'delete',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/deleteBranch`,
-      params:{
-        branch: current_catalog.value.id
-      }
+    try {
+      await apiClient.delete('/catalog/deleteBranch', {
+        params: {
+          branch: current_catalog.value.id
+        }
+      })
+    } catch (error) {
+      debug('Error deleteBranch:', error)
+      throw error
     }
-    const a = await axios.request(config);
   }
 
   const addBranch = async () => {
-    let config = {
-      method: 'put',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/addBranch`,
-      params:{
-        branch: current_catalog.value.id
-      }
+    try {
+      await apiClient.post('/catalog/addBranch', null, {
+        params: {
+          branch: current_catalog.value.id
+        }
+      })
+    } catch (error) {
+      debug('Error addBranch:', error)
+      throw error
     }
-    const a = await axios.request(config);
   }
 
   const getBranches = async () => {
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/branches`,
-    };
-
-    const a = await axios.request(
-      config
-  );
-
-  catalog.value = a.data;
+    try {
+      isLoading.value = true
+      const response = await apiClient.get('/catalog/branches')
+      catalog.value = response.data
+    } catch (error) {
+      debug('Error getBranches:', error)
+      catalog.value = []
+    } finally {
+      isLoading.value = false
+    }
   }
 
   const getBranch = async (id) => {
- let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/branch`,
-      params:{
-        branch: id
-      }
+    try {
+      isLoading.value = true
+      const response = await apiClient.get('/catalog/branch', {
+        params: {
+          branch: id
+        }
+      })
+      current_catalog.value = response.data
+    } catch (error) {
+      debug('Error getBranch:', error)
+    } finally {
+      isLoading.value = false
     }
-    const a = await axios.request(config);
-    current_catalog.value = a.data;
-  } 
+  }
 
   const getUsers = async () => {
-    users.value = [];
-    finding.value = false;
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog`,
-      params:{
-        branch: current_catalog.value.id
-      }
+    try {
+      isLoading.value = true
+      users.value = []
+      finding.value = false
+      const response = await apiClient.get('/catalog', {
+        params: {
+          branch: current_catalog.value.id
+        }
+      })
+      users.value = response.data
+      current_user.value = null
+    } catch (error) {
+      debug('Error getUsers:', error)
+      users.value = []
+    } finally {
+      isLoading.value = false
     }
-    const a = await axios.request(config);
-    users.value = a.data;
-    current_user.value = null;
   }
 
   const SearchUser = async (text, open, date) => {
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/search`,
-      params: open ? {
-        text: text
-      } : {
-         text: text,
-         date: date ? date: null,
-      }
+    try {
+      isLoading.value = true
+      const params = open ? { text } : { text, date: date || null }
+      const response = await apiClient.get('/catalog/search', { params })
+      current_catalog.value = null
+      users.value = response.data
+      finding.value = true
+    } catch (error) {
+      debug('Error SearchUser:', error)
+      users.value = []
+    } finally {
+      isLoading.value = false
     }
-    const a = await axios.request(config);
-    current_catalog.value = null;
-    users.value = a.data;
-    finding.value = true;
-
   }
 
   const updateBranch = async () => {
-    console.log(current_catalog.value)
-    let config = {
-      method: 'put',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/branch`,
-      data:{
+    try {
+      isUpdating.value = true
+      await apiClient.put('/catalog/branch', {
         name: current_catalog.value.name,
         address: current_catalog.value.adress,
         workDays: getWorkDaysObject(),
@@ -152,35 +164,55 @@ export const useWorkerStore = defineStore('worker', () => {
         cfo: current_catalog.value.cfo,
         city: current_catalog.value.city,
         email: current_catalog.value.email,
-      },
-      params: {
-        branchId: current_catalog.value.id
+      }, {
+        params: {
+          branchId: current_catalog.value.id
+        }
+      })
+    } catch (error) {
+      debug('Error updateBranch:', error)
+      if (window.$notification) {
+        window.$notification.error({
+          title: 'Ошибка',
+          content: 'Не удалось обновить данные филиала',
+          duration: 3000,
+        })
       }
+      throw error
+    } finally {
+      isUpdating.value = false
     }
-    const a = await axios.request(config); 
-    // users.value = a.data;
   }
 
   const UpdateContact = async (contact) => {
-    console.log(current_user.value)
-    let config = {
-      method: 'put',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/contact`,
-      data:{
+    try {
+      isUpdating.value = true
+      const response = await apiClient.put('/catalog/contact', {
         id: contact[0],
         type: contact[1],
         value: contact[2],
         userId: current_user.value.ID
-      },
+      })
+      current_user.value.Contacs = response.data
+    } catch (error) {
+      debug('Error UpdateContact:', error)
+      if (window.$notification) {
+        window.$notification.error({
+          title: 'Ошибка',
+          content: 'Не удалось обновить контакт',
+          duration: 3000,
+        })
+      }
+      throw error
+    } finally {
+      isUpdating.value = false
     }
-    const a = await axios.request(config); 
-    current_user.value.Contacs = a.data;
   }
 
   const updateUser = async () => {
-    console.log(current_user.value.MidName)
-    const data = {
+    try {
+      isUpdating.value = true
+      const data = {
         last_name: current_user.value.LastName,
         first_name: current_user.value.Name,
         second_name: current_user.value.MidName,
@@ -196,33 +228,41 @@ export const useWorkerStore = defineStore('worker', () => {
         leave_start: current_user.value.LeaveStart,
         leave_finish: current_user.value.LeaveFinish,
         bio: current_user.value.Bio
-      };
-      console.log(data);
-    let config = {
-      method: 'put',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/user`,
-      data: data,
-      params: {
-        userId: current_user.value.ID
       }
+      debug('updateUser data:', data)
+      await apiClient.put('/catalog/user', data, {
+        params: {
+          userId: current_user.value.ID
+        }
+      })
+    } catch (error) {
+      debug('Error updateUser:', error)
+      if (window.$notification) {
+        window.$notification.error({
+          title: 'Ошибка',
+          content: 'Не удалось обновить данные сотрудника',
+          duration: 3000,
+        })
+      }
+      throw error
+    } finally {
+      isUpdating.value = false
     }
-    const a = await axios.request(config); 
-    // users.value = a.data;
   }
 
   const updateBranchStruct = async (newFather) => {
-    let config = {
-      method: 'put',
-      maxBodyLength: Infinity,
-      url: `${base_url}/branch_struct`,
-      params:{
-        branch: current_catalog.value.id,
-        fatherId: newFather,
-      }
+    try {
+      const response = await apiClient.put('/branch_struct', null, {
+        params: {
+          branch: current_catalog.value.id,
+          fatherId: newFather,
+        }
+      })
+      users.value = response.data
+    } catch (error) {
+      debug('Error updateBranchStruct:', error)
+      throw error
     }
-    const a = await axios.request(config);
-    users.value = a.data;
   }
 
   const getWorkDaysObject = () => {
@@ -236,215 +276,200 @@ export const useWorkerStore = defineStore('worker', () => {
       saturdayClosing: current_catalog.value.saturdayClosing,
       sundayOpenning: current_catalog.value.sundayOpenning,
       sundayClosing: current_catalog.value.sundayClosing,
-
     }
   }
 
   const getRoles = async () => {
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/roles`
+    try {
+      isLoading.value = true
+      const response = await apiClient.get('/catalog/roles')
+      roles.value = response.data
+    } catch (error) {
+      debug('Error getRoles:', error)
+      roles.value = []
+    } finally {
+      isLoading.value = false
     }
-    const a = await axios.request(config);
-    roles.value = a.data;
   }
 
   const updateUserRole = async () => {
-    console.log(current_user.value)
-    let config = {
-      method: 'put',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/userRole`,
-      data:{
+    try {
+      await apiClient.put('/catalog/userRole', {
         role: current_user.value.role
-      },
-      params: {
-        userId: current_user.value.ID
-      }
+      }, {
+        params: {
+          userId: current_user.value.ID
+        }
+      })
+    } catch (error) {
+      debug('Error updateUserRole:', error)
+      throw error
     }
-    const a = await axios.request(config); 
   }
 
   const addRoles = async () => {
-    let config = {
-      method: 'push',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/role`
+    try {
+      const response = await apiClient.post('/catalog/role')
+      roles.value = response.data
+    } catch (error) {
+      debug('Error addRoles:', error)
+      if (window.$notification) {
+        window.$notification.error({
+          title: 'Ошибка',
+          content: 'Не удалось создать роль',
+          duration: 3000,
+        })
+      }
+      throw error
     }
-    const a = await axios.request(config);
-    roles.value = a.data;
   }
 
-  const moveRoles = async (role,axis) => {
-    let config = {
-      method: 'put',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/move_role`,
-      data: {
+  const moveRoles = async (role, axis) => {
+    try {
+      const response = await apiClient.put('/catalog/move_role', {
         role: role,
         axis: axis
-      }
+      })
+      roles.value = response.data
+    } catch (error) {
+      debug('Error moveRoles:', error)
+      throw error
     }
-    const a = await axios.request(config);
-    roles.value = a.data;
   }
 
   const uploadFile = async (image) => {
-    console.log(image)
-    const body = new FormData();
-    body.append('image', image)
-    console.log(body)
-    const cur_user_id = current_user.value.ID;
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/upload_photo/` + current_user.value.ID,
-      data: body,
-      headers:{
-        'Content-Type': 'multipart/form-data;',
+    try {
+      isUpdating.value = true
+      const body = new FormData()
+      body.append('image', image)
+
+      const response = await apiClient.post('/catalog/upload_photo/' + current_user.value.ID, body, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      current_user.value.Photo = ''
+      current_user.value.Photo = response.data.Photo
+    } catch (error) {
+      debug('Error uploadFile:', error)
+      if (window.$notification) {
+        window.$notification.error({
+          title: 'Ошибка',
+          content: 'Не удалось загрузить фото',
+          duration: 3000,
+        })
       }
+      throw error
+    } finally {
+      isUpdating.value = false
     }
-    const rez  = await axios.request(
-      config
-    );
-    current_user.value.Photo = '',
-    current_user.value.Photo = rez.data.Photo;
-    console.log(current_user.value.Photo);
   }
 
   const addUser = async () => {
-    const data = {
-      departament: current_catalog.value.id,
-    };
-    console.log(data,'add user aaa')
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/add_user`,
-      data: data,
-
-    }
-    const rez = await axios.request(
-      config
-    );
-    await getUsers();
-  }
-
-
-  const firstDayStart = async () => {
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/first_day_start/` + current_user.value.ID,
-      data: body,
-      headers:{
+    try {
+      isUpdating.value = true
+      const data = {
+        departament: current_catalog.value.id,
       }
+      debug('addUser data:', data)
+      await apiClient.post('/catalog/add_user', data)
+      await getUsers()
+    } catch (error) {
+      debug('Error addUser:', error)
+      if (window.$notification) {
+        window.$notification.error({
+          title: 'Ошибка',
+          content: 'Не удалось добавить сотрудника',
+          duration: 3000,
+        })
+      }
+      throw error
+    } finally {
+      isUpdating.value = false
     }
-    const rez  = await axios.request(
-      config
-    );
   }
 
   const removeUserStart = async () => {
-
-  const body = {
-      em_id: current_user.value.ID,
-    }
-    
-  let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/remove_user/` + current_user.value.ID,
-      data: body,
-      headers:{
+    try {
+      const body = {
+        em_id: current_user.value.ID,
       }
+      await apiClient.post('/catalog/remove_user/' + current_user.value.ID, body)
+    } catch (error) {
+      debug('Error removeUserStart:', error)
+      throw error
     }
-    const rez  = await axios.request(
-      config
-    );
   }
 
   const hiringEmployer = async () => {
-
-    const body = {
-      em_id: current_user.value.ID,
-      roleID: current_user.value.role.id,
-      hrMail: login_user.value?.contacts?.find(el => el[1] == 'email')[1] || null
-    }
-
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: `${base_url}/catalog/hiring_employer`,
-      data: body,
-      headers:{
+    try {
+      const body = {
+        em_id: current_user.value.ID,
+        roleID: current_user.value.role.id,
+        hrMail: login_user.value?.contacts?.find(el => el[1] === 'email')?.[1] || null
       }
+      await apiClient.post('/catalog/hiring_employer', body)
+    } catch (error) {
+      debug('Error hiringEmployer:', error)
+      throw error
     }
-    const rez  = await axios.request(
-      config
-    );
   }
 
-  const ClickArrow = (id) => {
-  console.log(id,'ClickArrow')
-  catalog.value = catalog.value.map((el) => {el = findAndChenchArrow(el, id); return el;})
-  // catalog.map(el => {if (el.id == value) el.is_open = !el.is_open; return el})
+  const clickArrow = (id) => {
+    debug(id, 'clickArrow')
+    catalog.value = catalog.value.map((el) => {
+      el = findAndChangeArrow(el, id)
+      return el
+    })
   }
 
-  const findAndChenchArrow = (catalog, id) => {
-  // console.log(catalog.id,id)
-  
-  if(catalog.id == id) {
-    catalog.is_open = !catalog.is_open;
-  }
-  if (catalog.children) {
-    catalog.children = catalog.children.map((el) => {el = findAndChenchArrow(el,id); return el})
-  }
-  return catalog;
+  const findAndChangeArrow = (catalogItem, id) => {
+    if (catalogItem.id === id) {
+      catalogItem.is_open = !catalogItem.is_open
+    }
+    if (catalogItem.children) {
+      catalogItem.children = catalogItem.children.map((el) => {
+        el = findAndChangeArrow(el, id)
+        return el
+      })
+    }
+    return catalogItem
   }
 
   const addRole = async () => {
-
-      let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: `${base_url}/catalog/addRole`,
-        headers:{
-        }
+    try {
+      const response = await apiClient.post('/catalog/addRole')
+      if (response.status === 201) {
+        await getRoles()
       }
-      const rez  = await axios.request(
-        config
-      );
-      if(rez.status === 201) {
-        await getRoles();
-      }
-      console.log(rez.data.raw[0].id)
-      current_role.value = roles.value.find((el) => {console.log(el.id); return rez.data.raw[0].id == el.id});
+      debug('addRole result:', response.data.raw[0].id)
+      current_role.value = roles.value.find((el) => {
+        debug('role id:', el.id)
+        return response.data.raw[0].id === el.id
+      })
+    } catch (error) {
+      debug('Error addRole:', error)
+      throw error
+    }
   }
 
   const updateRole = async () => {
+    try {
       const data = {
         id: current_role.value.id,
         name: current_role.value.name
       }
-      let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: `${base_url}/catalog/updateRole`,
-        data: data
-      }
-      const rez  = await axios.request(
-        config
-      );
+      await apiClient.post('/catalog/updateRole', data)
+    } catch (error) {
+      debug('Error updateRole:', error)
+      throw error
+    }
   }
 
-
   return {
-    ClickArrow,
+    clickArrow,
     updateRole,
     removeUserStart,
-    firstDayStart,
     moveBranch,
     deleteBranch,
     uploadFile,
@@ -474,6 +499,8 @@ export const useWorkerStore = defineStore('worker', () => {
     moveRoles,
     hiringEmployer,
     addUser,
-    
+    login_user,
+    isLoading,
+    isUpdating,
   }
 })
