@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps, defineEmits, ref, onMounted, onUpdated } from 'vue';
-import IconContact from './IconContact.vue'
+// import IconContact from './IconContact.vue'
 import { debug } from '@/utils/debug'
 const props = defineProps({
   user: { type: Object, required: true }
@@ -76,7 +76,7 @@ const vis_ing = ref(true);
         <section style="display: flex; flex: 35% 65%">
             <section class="photo" style="z-index: 10; padding: 0px; margin: 0px; background-color: white;">
                 <img v-if="vis_ing" ref="img_block" height="160px" style=" border-radius: 8px 0px 0px 8px; object-fit: cover;  max-width: 160px;"
-                :src="import.meta.env.VITE_S3_URL + $props.user?.Photo + '?t=' + new Date().getTime()">
+                :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + $props.user?.Photo + '?t=' + new Date().getTime()">
                 <img v-if="!vis_ing" src="../../../assets/userProfile.svg" height="160px" style="border-radius: 8px 0px 0px 8px;">
                 <!-- <img v-if="!vis_ing" :src="`/img/bookicon.svg`" alt="" style="width: 100px; height: 70px;"> -->
             </section>
