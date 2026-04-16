@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(openspec *)",
+      "Read(c:\\Users\\g.zyuzin\\Desktop\\Линпип/**)"
+    ]
+  },
+  "$version": 3
+}

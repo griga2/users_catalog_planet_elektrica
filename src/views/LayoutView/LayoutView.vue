@@ -66,7 +66,7 @@ const {
 
         <n-input 
             v-model:value="bio"
-            type="textarea" style="width: 600px;"
+            type="textarea" style="width: 600px; font-size: 22px;"
             placeholder="Описание">
         </n-input>
         
