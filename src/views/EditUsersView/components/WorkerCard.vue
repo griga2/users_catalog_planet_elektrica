@@ -1,6 +1,9 @@
 <script setup>
 import { defineProps, defineEmits, ref, onMounted, watch } from 'vue';
-const props = defineProps(['user'])
+import { debug } from '@/utils/debug';
+const props = defineProps({
+    user: { type: Object, required: true }
+})
 const emits = defineEmits(['click_open_dop', 'click_block'])
 
 const copy = (value) => {
@@ -10,7 +13,7 @@ const copy = (value) => {
         })
         .catch(err => {
             // возможно, пользователь не дал разрешение на чтение данных из буфера обмена
-            console.log('Something went wrong', err);
+            debug('Something went wrong', err);
         });
 }
 
@@ -21,7 +24,7 @@ const GetBirthdayday = (_date) => {
 }
 
 const openMailClient = (email) => {
-    console.log('email')
+    debug('email')
     window.location.href = "mailto:" + email;
 }
 
@@ -33,15 +36,15 @@ const chengevis = () => {
 const img_block = ref(null)
 
 onMounted(() => {
-    console.log(img_block.value);
+    debug(img_block.value);
     img_block.value.onerror = chengevis;
     vis_ing.value = true;
 })
 
 const vis_ing = ref(true);
 
-watch(props.user.Photo, async (newQuestion, oldQuestion) => {
-    console.log('update')
+watch(() => props.user.Photo, async (newQuestion, oldQuestion) => {
+    debug('update')
     if (newQuestion != oldQuestion) {
         vis_ing.value = true;
     }
@@ -53,9 +56,9 @@ watch(props.user.Photo, async (newQuestion, oldQuestion) => {
     <section class="prod_cadr" >
         <section class="main" style="">
             <section class="photo" style=" padding: 0px; margin: 0px;">
-                <img v-if="vis_ing" ref="img_block" height="160px" 
-                style=" border-radius: 8px 0px 0px 8px; object-fit: cover;  max-width: 200px;" 
-                :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + $props.user?.Photo + '?t=' + new Date().getTime()">
+                <img v-if="vis_ing" ref="img_block" height="160px"
+                style=" border-radius: 8px 0px 0px 8px; object-fit: cover;  max-width: 200px;"
+                :src="import.meta.env.VITE_S3_URL + $props.user?.Photo + '?t=' + new Date().getTime()">
                 <img v-if="!vis_ing" src="../../../assets/userProfile.svg" 
                 height="200px" style="border-radius: 6px 0px 0px 6px;">
             </section>

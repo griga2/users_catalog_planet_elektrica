@@ -1,6 +1,10 @@
 <script setup>
 import { defineProps, onMounted, ref, watch } from 'vue';
-const props = defineProps(['row', "active_row"])  
+import { debug } from '@/utils/debug';
+const props = defineProps({
+    row: { type: Object, required: true },
+    active_row: { type: Number, required: true }
+})
 const emit = defineEmits(['click_row', 'click_arrow'])
 import CatalogRow from '../components/ItemBlock.vue'
 import { storeToRefs } from 'pinia';
@@ -37,14 +41,14 @@ const timeAutID = ref('')
 const updateContact = (contact) => {
     clearTimeout(timeAutID.value);
     timeAutID.value = setTimeout(async() => {
-        console.log('update branch')
+        debug('update branch')
         store.UpdateContact(contact)
 
     }, 500);
 }
 
 const changeFile = async (file) => {
-    console.log(file);
+    debug(file);
     await store.uploadFile(file);
     vis_ing.value = true;
 }
@@ -63,13 +67,13 @@ const img_block = ref(null)
 
 onMounted(() => {
     store.getRoles();
-    console.log(img_block.value);
+    debug(img_block.value);
     // if (current_user.value?.Photo) {
         img_block.value.onerror = chengevis;
         vis_ing.value = true;
     // }
 
-  
+
 })
 
 const vis_ing = ref(true);
@@ -135,13 +139,13 @@ const hiringEmployer = () => {
                         </section>
                     </section>
                     <section class="photo" style="z-index: 10; padding: 0px; margin: 0px; background-color: white;">
-                        <img v-if="vis_ing" ref="img_block" height="160px" 
-                            style=" border-radius: 8px 0px 0px 8px; object-fit: cover; max-width: 200px;" 
-                            :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + current_user?.Photo + '?t=' + new Date().getTime()">
+                        <img v-if="vis_ing" ref="img_block" height="160px"
+                            style=" border-radius: 8px 0px 0px 8px; object-fit: cover; max-width: 200px;"
+                            :src="import.meta.env.VITE_S3_URL + current_user?.Photo + '?t=' + new Date().getTime()">
                         <img v-if="!vis_ing" src="../../../assets/userProfile.svg" 
                             height="200px" style="border-radius: 6px 0px 0px 6px;">
                         <input  @change="(event) => {
-                            console.log(event);
+                            debug(event);
                             changeFile(event.target.files[0]);
                         }"  
                         type="file"
@@ -161,9 +165,9 @@ const hiringEmployer = () => {
                 </article>
                 <article class="input_block">
                     <span>Пол</span>
-                    <n-select 
-                        @input="(v) => {console.log('awd')}" 
-                        v-model:value="current_user.Sex" 
+                    <n-select
+                        @input="(v) => {debug('awd')}"
+                        v-model:value="current_user.Sex"
                         :options="[{label:'Женский',value:'Female'}
                         ,{label:'Мужской',value:'Male'}
                         ,{label:'Не указан',value:''}]" />

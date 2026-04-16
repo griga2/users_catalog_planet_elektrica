@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useWorkerStore } from '../../../stores/index'
+import { debug } from '@/utils/debug'
 const store = useWorkerStore();
 
 const date = ref();
@@ -13,7 +14,7 @@ const clickLupa = () => {
     if (inputText.value != "") {
         store.SearchUser(inputText.value, !open.value, JSON.stringify(date.value));
     } else {
-        console.log('click lupa', serch_focus.value)
+        debug('click lupa', serch_focus.value)
         serch_focus.value.focus();
     }
     
@@ -25,8 +26,8 @@ onMounted(() => {
     // date.value = [startDate, endDate];
 })
 
-const input = (event) => {  
-            console.log('search')
+const input = (event) => {
+            debug('search')
             store.SearchUser(event.target.value, !open.value, JSON.stringify(date.value));
        }
 
@@ -47,7 +48,7 @@ const input = (event) => {
        :format="'dd.MM.yyyy'"
        style="width: 340px; margin-right: 10px;" 
        @update:model-value="() => {
-        console.log('chenge');
+        debug('chenge');
         input({target:{value:inputText}});
        }"/>
        <img src="../../../assets/calender.svg" 

@@ -3,6 +3,7 @@ import {useWorkerStore} from '../../../stores/index'
 import { computed, onMounted, watch} from 'vue'
 import { storeToRefs } from 'pinia';
 import WorkerCard from './WorkerCard.vue'
+import { debug } from '@/utils/debug'
 
 const store = useWorkerStore();
 const {
@@ -12,13 +13,13 @@ const {
     current_user,
     show_branch_info,
 } = storeToRefs(store)
- 
+
 const getPadding = () => {
-    console.log(current_catalog.value)
+    debug(current_catalog.value)
     let a;
     if (!current_catalog.value) a = 70 + 'px';
     a = 210 + 'px';
-    console.log({'padding-top': a});
+    debug({'padding-top': a});
     return {'padding-top': a}
 }
 
@@ -40,14 +41,14 @@ const add_user = () => {
         </article>
 
         <article v-for="worker of users" :key="worker.id"  >
-            <WorkerCard 
-                @click="() => {console.log(worker);current_user = worker}"
+            <WorkerCard
+                @click="() => {debug(worker);current_user = worker}"
                 class="worker_card"
                 :user="worker" @click_open_dop="() => {
-                worker.visible_dop = !worker.visible_dop}" 
+                worker.visible_dop = !worker.visible_dop}"
                 :class="{active: current_user?.id === worker.id}">
             </WorkerCard>
-        </article>  
+        </article>
         
     </main>
 </template>

@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(openspec *)",
-      "Read(c:\\Users\\g.zyuzin\\Desktop\\Линпип/**)"
+      "Bash(mkdir *)",
+      "Bash(copy *)",
+      "Bash(rmdir *)",
+      "Bash(del *)"
     ]
   },
   "$version": 3

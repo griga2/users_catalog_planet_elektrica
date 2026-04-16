@@ -1,11 +1,15 @@
 <script setup>
-import { defineProps, ref } from 'vue';
-const props = defineProps(['row', "active_row"])  
+import { ref } from 'vue';
+const props = defineProps({
+    row: { type: Object, required: true },
+    active_row: { type: Object, required: true }
+})
 const emit = defineEmits(['click_row', 'click_arrow'])
 import CatalogRow from '../components/ItemBlock.vue'
 import { storeToRefs } from 'pinia';
 import {useWorkerStore} from '../../../stores/index.js'
 import WorkTimeComponent from '@/components/WorkTimeComponent.vue';
+import { debug } from '@/utils/debug'
 const store = useWorkerStore();
 const {
     users,
@@ -33,10 +37,10 @@ const timeAutID = ref('')
 const  updateBranch = async () => {
     clearTimeout(timeAutID.value);
     timeAutID.value = setTimeout(async() => {
-        console.log('update branch')
+        debug('update branch')
         await store.updateBranch();
     }, 1000);
-    
+
 }
 </script>
 
