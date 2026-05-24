@@ -3,5 +3,11 @@
     "Vue.volar",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode"
-  ]
+  ],
+  "servers": {
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=zrwwksnxfznqplddlkmc&features=development%2Cdebugging%2Cdatabase"
+    }
+  }
 }
