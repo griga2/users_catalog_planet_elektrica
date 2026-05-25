@@ -52,6 +52,4 @@ main{
   background-color: #d3d3d3;
 }
 
-
-
 </style>

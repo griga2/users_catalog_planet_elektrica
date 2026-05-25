@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps, defineEmits, ref, onMounted, onUpdated } from 'vue';
-// import IconContact from './IconContact.vue'
+import IconContact from './IconContact.vue'
 import { debug } from '@/utils/debug'
 const props = defineProps({
   user: { type: Object, required: true }
@@ -74,8 +74,8 @@ const vis_ing = ref(true);
 <template>
     <section class="prod_cadr" :class="{open:props.user.visible_dop}">
         <section style="display: flex; flex: 35% 65%">
-            <section class="photo" style="z-index: 10; padding: 0px; margin: 0px; background-color: white;">
-                <img v-if="vis_ing" ref="img_block" height="160px" style=" border-radius: 8px 0px 0px 8px; object-fit: cover;  max-width: 160px;"
+            <section class="photo" style="z-index: 10; padding: 0px; margin: 0px; background-color: white; width: 180px; display: flex; flex-direction: row; align-items: start; justify-content: center; margin-left: -1px;">
+                <img v-if="vis_ing" ref="img_block" height="160px" style=" border-radius: 6px 0px 0px 6px; object-fit: cover;  max-width: 160px;"
                 :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + $props.user?.Photo + '?t=' + new Date().getTime()">
                 <img v-if="!vis_ing" src="../../../assets/userProfile.svg" height="160px" style="border-radius: 8px 0px 0px 8px;">
                 <!-- <img v-if="!vis_ing" :src="`/img/bookicon.svg`" alt="" style="width: 100px; height: 70px;"> -->
@@ -93,7 +93,7 @@ const vis_ing = ref(true);
                                 <article v-if="main_contact.includes(contact[1]) && contact[0] && contact[2] != ''" style="display: flex; flex-direction: row;">
                                     <IconContact :value="contact[1]">   
                                     </IconContact>
-                                    <span>{{ contact[2] }}</span>
+                                    <span style="font-size: 20px;">{{ contact[2] }}</span>
                                 </article>
                             </article>
                         </section>
@@ -105,7 +105,7 @@ const vis_ing = ref(true);
                         </article>
                     </section>
                 </section>
-                <section class="status_block" style="font-size: 22px;" v-if="props.user?.Bio">
+                <section class="status_block" style="font-size: 16px;" v-if="props.user?.Bio">
                     {{ props.user?.Bio }}
                 </section>
                 <section style="width: 100%;">

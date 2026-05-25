@@ -30,10 +30,10 @@ const edit_roles = ['hr'];
 </script>
 
 <template>
-    <main>
+    <main style="height: 30px;">
         <RouterLink  v-if="!names_editor.includes(route.name)"
         :to="'/catalog'">
-            <button>
+            <button style="font-weight: 800; background-color: white; height: 30px;">
                 Справочник
             </button>
         </RouterLink>

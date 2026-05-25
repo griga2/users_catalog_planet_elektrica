@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia';
 import { useRoute } from 'vue-router';
 import CatalogRow from './CatalogRow.vue'
 import { debug } from '@/utils/debug'
+
 const store = useWorkerStore();
 const route = useRoute();
 const {
@@ -86,7 +87,7 @@ const insertBranch = () => {
                     
                         :row="branch"
                         :active_row="current_catalog" 
-                        @click_arrow="(value) => {store.ClickArrow(value)}" 
+                        @click_arrow="(value) => {store?.clickArrow(value)}" 
                         @click_row="(value) => {debug(value); current_catalog = value; store.getUsers()}">
                     </CatalogRow>
             </article>
@@ -156,6 +157,7 @@ const insertBranch = () => {
     border-radius: 10px;
     margin-bottom: 14px;
     padding-top: 8px;
+    padding-left: 5px;
 }
 
 </style>
