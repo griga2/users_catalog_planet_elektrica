@@ -45,8 +45,8 @@ const  updateBranch = async () => {
 </script>
 
 <template>
-    <main class="main   ">
-    <section style="display: flex; flex-direction: row;" v-if="current_catalog != null">
+    <main class="main">
+    <section style="display: flex; flex-direction: row; flex-wrap: wrap;" v-if="current_catalog != null">
         <section style="width: 50%;">
                 <span class="header">Общая информация</span>
                 <section class="info_block" style="flex-direction: current_catalog; flex-wrap: wrap; width: 100%;">
@@ -249,6 +249,7 @@ article {
     background-color: white;
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
 }
 
 .close_main{

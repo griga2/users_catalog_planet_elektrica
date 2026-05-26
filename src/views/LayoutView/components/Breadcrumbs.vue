@@ -33,28 +33,28 @@ const edit_roles = ['hr'];
     <main style="height: 30px;">
         <RouterLink  v-if="!names_editor.includes(route.name)"
         :to="'/catalog'">
-            <button style="font-weight: 800; background-color: white; height: 30px;">
+            <button  class="header_button" style="">
                 Справочник
             </button>
         </RouterLink>
 
         <RouterLink v-if="names_editor.includes(route.name)"
             :to="'/edit_struct'">
-            <button>
-                Структура компании
+            <button class="header_button" >
+                Структура 
             </button>
         </RouterLink>
 
         <RouterLink v-if="names_editor.includes(route.name)"
             :to="'/edit_workers'">
-            <button>
+            <button class="header_button">
                 Сотрудники
             </button>
         </RouterLink>
 
         <RouterLink v-if="names_editor.includes(route.name)"
             :to="'/edit_roles'">
-            <button>
+            <button class="header_button">
                 Роли
             </button>
         </RouterLink>
@@ -63,6 +63,10 @@ const edit_roles = ['hr'];
 </template>
 
 <style scoped>
+
+.header_button{
+    font-weight: 800; background-color: white; height: 30px;
+}
 
 main{
     width: 100%;

@@ -59,15 +59,15 @@ watch(() => props.user.Photo, async (newQuestion, oldQuestion) => {
                 <img 
                 
                 v-if="vis_ing" ref="img_block" height="160px"
-                style=" border-radius: 8px 0px 0px 8px; object-fit: cover;  max-width: 200px;"
+                style=" border-radius: 8px 0px 0px 8px; object-fit: cover;  max-width: 100px;"
                 :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + $props.user?.Photo + '?t=' + new Date().getTime()">
                 <img v-if="!vis_ing" src="../../../assets/userProfile.svg" 
-                height="200px" style="border-radius: 6px 0px 0px 6px;">
+                height="100px" style="border-radius: 6px 0px 0px 6px;">
             </section>
             <section class="text" style="z-index: 10;">
                 <section>
-                    <article><h2>{{props.user?.full_name}}</h2></article>
-                    <article class="work"><span>{{props.user?.role_name}}</span></article>
+                    <article><h2 style="  overflow-wrap: break-word; width: 100%; font-size: 1.4rem;">{{props.user?.full_name}}</h2></article>
+                    <article class="work"><span style="  overflow-wrap: break-word; width: 100%; ">{{props.user?.role_name}}</span></article>
                 </section>
             </section>
            
@@ -91,8 +91,8 @@ watch(() => props.user.Photo, async (newQuestion, oldQuestion) => {
     /* align-items: center */
     justify-content: space-between;
     transition: all 0.3s;
-    height: 200px;
-    width: 100%;
+    min-height: 100px;
+    /* width: max-content; */
     margin: 4px;
 }
 
@@ -129,7 +129,7 @@ watch(() => props.user.Photo, async (newQuestion, oldQuestion) => {
 }   
 
 .photo {
-    height: 200px;
+    height: 100px;
     border-radius: 6px 0px 0px 6px;
     background-color: #a3a3a3;
 }
