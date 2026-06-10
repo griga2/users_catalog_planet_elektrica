@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { defineProps, defineEmits, ref, onMounted } from 'vue';
+import IconContact from './IconContact.vue'
 import { debug } from '@/utils/debug'
 import { storeToRefs } from 'pinia'
 import {useWorkerStore} from '../../../stores/index.js'
@@ -58,55 +59,52 @@ const main_contact = ['workPhone','email']
 </script>
 
 <template>
-    <article class="worker-card" :class="{ on_leave: chechInleave() }">
-        <div class="card-left">
-            <div class="photo-wrapper">
-                <img
-                    v-if="vis_ing && props.user?.Photo"
-                    ref="img_block"
-                    :src="photo_url"
-                    :alt="props.user?.full_name"
-                    class="photo"
-                />
-                <div v-else class="photo-placeholder">
-                    <span class="initials">{{ props.user?.full_name?.charAt(0) || '?' }}</span>
-                </div>
-                <div v-if="chechInleave()" class="status-badge on-vacation">В отпуске</div>
-            </div>
-        </div>
-        
-        <div class="card-content">
-            <div class="card-header">
-                <div class="header-main">
-                    <h2 class="name">{{ props.user?.full_name }}</h2>
-                    <span v-if="props.user?.role?.name" class="role">{{ props.user?.role?.name }}</span>
-                </div>
-                <div v-if="props.user?.number" class="employee-number">#{{ props.user?.number }}</div>
-            </div>
-            
-            <div class="dept-row"
-                v-if="finding && props.user?.DepartamentID"
-                @click.stop="emits('click_dep', { depID: props.user?.DepartamentID, userID: props.user.ID })">
-                <span class="dept-icon">🏢</span>
-                <span class="dept-name">{{ props.user?.department_name }}</span>
-            </div>
-            
-            <div class="contacts-row">
-                <template v-for="contact of props.user?.Contacs" :key="contact[1]">
-                    <a
-                        v-if="main_contact.includes(contact[1]) && contact[2]"
-                        :href="contact[1] === 'email' ? 'mailto:' + contact[2] : 'tel:' + contact[2]"
-                        class="contact-link"
-                    >
-                        <span class="contact-icon">{{ contact[1] === 'email' ? '📧' : '📞' }}</span>
-                        <span class="contact-value">{{ contact[2] }}</span>
-                    </a>
-                </template>
-                <div v-if="props.user?.Birthday" class="birthday-link">
-                    <span class="contact-icon">🎂</span>
-                    <span class="contact-value">{{ GetBirthdayday(props.user?.Birthday) }}</span>
-                </div>
-            </div>
+    <section class="prod_cadr" :class="{open:props.user.visible_dop}">
+        <section style="display: flex; flex: 35% 65%">
+            <section class="photo" style="z-index: 10; padding: 0px; margin: 0px; background-color: white; width: 180px; display: flex; flex-direction: row; align-items: start; justify-content: center; margin-left: -1px;">
+                <img v-if="vis_ing" ref="img_block" height="160px" style=" border-radius: 6px 0px 0px 6px; object-fit: cover;  max-width: 160px;"
+                :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + $props.user?.Photo + '?t=' + new Date().getTime()">
+                <img v-if="!vis_ing" src="../../../assets/userProfile.svg" height="160px" style="border-radius: 8px 0px 0px 8px;">
+                <!-- <img v-if="!vis_ing" :src="`/img/bookicon.svg`" alt="" style="width: 100px; height: 70px;"> -->
+            </section>
+            <section class="main" style="z-index: 10; width: 100%;">
+                <section class="head_block" style="z-index: 10;">
+                    <section class="contact_block">
+                        <article><h2>{{props.user?.full_name}}</h2></article>
+                        <article class="work" 
+                            v-if="finding"
+                            @click="emits('click_dep',{depID:props.user?.DepartamentID, userID: props.user.ID})"><span>{{props.user?.department_name}}</span></article>
+                        <article class="work"><span>{{props.user?.role?.name}}</span></article>
+                        <section style="display: flex; flex-direction: column; flex-wrap: wrap; width: 100%; max-height: 120px; margin: 10px;" >
+                            <article v-for="contact of props.user.Contacs"> 
+                                <article v-if="main_contact.includes(contact[1]) && contact[0] && contact[2] != ''" style="display: flex; flex-direction: row;">
+                                    <IconContact :value="contact[1]">   
+                                    </IconContact>
+                                    <span style="font-size: 20px;">{{ contact[2] }}</span>
+                                </article>
+                            </article>
+                        </section>
+                    </section>
+                    <section>
+                        <article style="display: flex; flex-direction: row; gap: 5px;padding: 20px; font-family: circe;">
+                            <img src="../../../assets/cake.svg">
+                            <span>{{ GetBirthdayday(props.user?.Birthday) }}</span>
+                        </article>
+                    </section>
+                </section>
+                <section class="status_block" style="font-size: 16px;" v-if="props.user?.Bio">
+                    {{ props.user?.Bio }}
+                </section>
+                <section style="width: 100%;">
+                        <article><h3>{{props.user?.number}}</h3></article>
+                </section>
+                <section v-if="chechInleave()" style="padding: 20px 5px; margin-top: -25px;">
+                    <h4>В отпуске с {{ $props.user.LeaveStart?.substring(5, 10) }} по {{ $props.user.LeaveFinish?.substring(5, 10) }}</h4>
+                    <span>{{ $props.user.LeaveText }}</span>
+                </section>
+            </section>
+        </section>
+    </section>  
 
             <p v-if="props.user?.Bio" class="bio">{{ props.user?.Bio }}</p>
             

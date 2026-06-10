@@ -2,7 +2,7 @@
 import { useWorkerStore } from '../../../stores/index'
 import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia';
-import WorkerCard from './WorkerCard.vue'
+import WorkerCard from './WorkerCardSmallHeight.vue'
 import { debug } from '@/utils/debug'
 
 const store = useWorkerStore();

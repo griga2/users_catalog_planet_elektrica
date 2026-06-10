@@ -16,27 +16,45 @@ const edit_roles = ['hr'];
 </script>
 
 <template>
-    <nav class="breadcrumbs">
-        <RouterLink :to="'/catalog'" :class="{ active: route.name === 'catalog' }">
-            Справочник
+    <main style="height: 30px;">
+        <RouterLink  v-if="!names_editor.includes(route.name)"
+        :to="'/catalog'">
+            <button  class="header_button" style="">
+                Справочник
+            </button>
         </RouterLink>
-        <div v-if="checkLogin" class="breadcrumbs-divider">/</div>
-        <RouterLink v-if="checkLogin" :to="'/edit_struct'" :class="{ active: route.name === 'editor' }">
-            Структура
+
+        <RouterLink v-if="names_editor.includes(route.name)"
+            :to="'/edit_struct'">
+            <button class="header_button" >
+                Структура 
+            </button>
         </RouterLink>
-        <div v-if="checkLogin" class="breadcrumbs-divider">/</div>
-        <RouterLink v-if="checkLogin" :to="'/edit_workers'" :class="{ active: route.name === 'edit_workers' }">
-            Сотрудники
+
+        <RouterLink v-if="names_editor.includes(route.name)"
+            :to="'/edit_workers'">
+            <button class="header_button">
+                Сотрудники
+            </button>
         </RouterLink>
-        <div v-if="checkLogin" class="breadcrumbs-divider">/</div>
-        <RouterLink v-if="checkLogin" :to="'/edit_roles'" :class="{ active: route.name === 'edit_roles' }">
-            Роли
+
+        <RouterLink v-if="names_editor.includes(route.name)"
+            :to="'/edit_roles'">
+            <button class="header_button">
+                Роли
+            </button>
         </RouterLink>
     </nav>
 </template>
 
 <style scoped>
-.breadcrumbs {
+
+.header_button{
+    font-weight: 800; background-color: white; height: 30px;
+}
+
+main{
+    width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;

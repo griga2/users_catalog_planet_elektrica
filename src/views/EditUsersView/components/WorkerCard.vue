@@ -31,23 +31,28 @@ const photo_url = S3_URL + props.user?.Photo + '?t=' + new Date().getTime();
 </script>
 
 <template>
-    <article class="worker-card" @click="emits('click_block')">
-        <div class="photo">
-            <img 
-                v-if="vis_ing && props.user?.Photo" 
-                ref="img_block" 
-                :src="photo_url" 
-                :alt="props.user?.full_name"
-            />
-            <div v-else class="placeholder">
-                <span>{{ props.user?.full_name?.charAt(0) || '?' }}</span>
-            </div>
-        </div>
-        <div class="info">
-            <h3 class="name">{{ props.user?.full_name }}</h3>
-            <span class="role">{{ props.user?.role_name }}</span>
-        </div>
-    </article>
+    <section class="prod_cadr" >
+        <section class="main" style="">
+            <section class="photo" style=" padding: 0px; margin: 0px;">
+                <img 
+                
+                v-if="vis_ing" ref="img_block" height="160px"
+                style=" border-radius: 8px 0px 0px 8px; object-fit: cover;  max-width: 200px;"
+                :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + $props.user?.Photo + '?t=' + new Date().getTime()">
+                <img v-if="!vis_ing" src="../../../assets/userProfile.svg" 
+                height="200px" style="border-radius: 6px 0px 0px 6px;">
+            </section>
+            <section class="text" style="z-index: 10;">
+                <section>
+                    <article><h2>{{props.user?.full_name}}</h2></article>
+                    <article class="work"><span>{{props.user?.role_name}}</span></article>
+                </section>
+            </section>
+           
+        </section>
+        
+    </section>
+   
 </template>
 
 <style scoped>

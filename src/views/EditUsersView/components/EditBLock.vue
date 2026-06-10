@@ -105,8 +105,8 @@ const hiringEmployer = () => {
                 Уволить
             </button>
         </section>
-        <section style="display : flex; flex-direction:  column; width: 100%;" >
-                <section style="display: flex; flex-direction: row; flex-wrap: nowrap; width: 100%;">
+        <section style="display : flex; flex-direction:  column; width: 100%; flex-wrap: wrap;" >
+                <section style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%;">
                     <section style="width: 100%; flex-direction: column;">
                         <span class="header">Общая информация</span>
                         <section class="info_block" style="flex-direction: column; flex-wrap: wrap; width: 100%;">
@@ -398,5 +398,9 @@ input{
     margin-bottom: 10px;
     padding: 20px;
     width: 50%;
+
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
 }
 </style>

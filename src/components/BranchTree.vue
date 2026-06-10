@@ -6,8 +6,8 @@ import { useRoute } from 'vue-router'
 import CatalogRow from './CatalogRow.vue'
 import { debug } from '@/utils/debug'
 
-const store = useWorkerStore()
-const route = useRoute()
+const store = useWorkerStore();
+const route = useRoute();
 const {
     users,
     catalog,
@@ -103,15 +103,16 @@ const is_editor = route.name === 'editor'
 
         <div class="tree-content">
             <article v-for="branch of catalog.filter(el => {
-                if (route.name === 'catalog' && el.id === '64E1B3E8-0EC2-4C89-A3CE-F68F4DE515A1') return false
-                return true
-            })" :key="branch.id">
-                <CatalogRow
-                    :row="branch"
-                    :active_row="current_catalog"
-                    @click_arrow="(value) => store.ClickArrow(value)"
-                    @click_row="(value) => { debug(value); current_catalog = value; store.getUsers() }"
-                />
+                if (route.name == 'catalog' && el.id == '64E1B3E8-0EC2-4C89-A3CE-F68F4DE515A1') return false;
+                return true;
+            })" v-bind:key="branch.id" >
+                    <CatalogRow 
+                    
+                        :row="branch"
+                        :active_row="current_catalog" 
+                        @click_arrow="(value) => {store?.clickArrow(value)}" 
+                        @click_row="(value) => {debug(value); current_catalog = value; store.getUsers()}">
+                    </CatalogRow>
             </article>
         </div>
     </section>
@@ -180,8 +181,17 @@ const is_editor = route.name === 'editor'
     width: 6px;
 }
 
-.tree-content::-webkit-scrollbar-track {
-    background: transparent;
+.catalog_branch_tree {
+    width: 300px;
+    height: calc(100% - 18px);
+    background-color: white;
+    overflow-y: scroll;
+    align-items: start;
+    justify-content: start;
+    border-radius: 10px;
+    margin-bottom: 14px;
+    padding-top: 8px;
+    padding-left: 5px;
 }
 
 .tree-content::-webkit-scrollbar-thumb {
