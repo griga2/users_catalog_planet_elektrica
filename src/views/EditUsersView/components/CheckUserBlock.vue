@@ -1,6 +1,6 @@
 <script setup>
-import {useWorkerStore} from '../../../stores/index'
-import { computed, onMounted, watch} from 'vue'
+import { useWorkerStore } from '../../../stores/index'
+import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia';
 import WorkerCard from './WorkerCard.vue'
 import { debug } from '@/utils/debug'
@@ -8,20 +8,9 @@ import { debug } from '@/utils/debug'
 const store = useWorkerStore();
 const {
     users,
-    catalog,
     current_catalog,
     current_user,
-    show_branch_info,
 } = storeToRefs(store)
-
-const getPadding = () => {
-    debug(current_catalog.value)
-    let a;
-    if (!current_catalog.value) a = 70 + 'px';
-    a = 210 + 'px';
-    debug({'padding-top': a});
-    return {'padding-top': a}
-}
 
 onMounted(() => {
     store.getBranches()
@@ -31,58 +20,86 @@ const add_user = () => {
     store.addUser()   
 }
 
-
+const select_user = (worker) => {
+    debug(worker);
+    current_user.value = worker;
+}
 </script>
 
 <template>
-    <main style="overflow-y: scroll;" class="margined_list_block">
-        <article id="add_user_bt" @click="add_user" v-if="current_catalog">
-        Добавить пользователя<img style="margin-left: 4px" height="24px" src="../../../assets/plus.svg">
-        </article>
+    <main class="check-user-block">
+        <button v-if="current_catalog" class="add-user-btn" @click="add_user">
+            <span>Добавить пользователя</span>
+            <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </button>
 
-        <article v-for="worker of users" :key="worker.id"  >
+        <div v-if="users.length === 0" class="empty-list">
+            <p>Нет сотрудников в выбранном подразделении</p>
+        </div>
+
+        <div class="users-list">
             <WorkerCard
-                @click="() => {debug(worker);current_user = worker}"
-                class="worker_card"
-                :user="worker" @click_open_dop="() => {
-                worker.visible_dop = !worker.visible_dop}"
-                :class="{active: current_user?.id === worker.id}">
-            </WorkerCard>
-        </article>
-        
+                v-for="worker of users"
+                :key="worker.id"
+                :user="worker"
+                :class="{ active: current_user?.id === worker.id }"
+                @click="select_user(worker)"
+                @click_open_dop="worker.visible_dop = !worker.visible_dop"
+            />
+        </div>
     </main>
 </template>
 
 <style scoped>
-
-main{
+.check-user-block {
     height: 100%;
-    margin-top: 8px;
-    overflow-y: hidden;
-    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--color-bg);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
 }
 
-#add_user_bt{
-    background-color: white;
-    height: 32px;
-    width: 100%;
+.add-user-btn {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin-left: 4px;
-    border-radius: 4px;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: white;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: var(--font-family);
+}
+
+.add-user-btn:hover {
+    background: var(--color-primary-dark);
+}
+
+.empty-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    color: var(--color-text-muted);
     text-align: center;
-    font-family: 'circe-bold'
 }
 
-.worker_card{
-    background-color: white;
+.users-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px;
+    padding-bottom: 16px;
 }
-
-.margined_list_block{
-    height: calc(100% - 15px);
-    margin-bottom: 18px;
-}
-
 </style>

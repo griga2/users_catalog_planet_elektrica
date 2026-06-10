@@ -1,42 +1,48 @@
 <script setup>
-import {useWorkerStore} from '../../stores/index'
-import { computed, onMounted} from 'vue'
-import CatalogRow from './components/ItemBlock.vue';
+import { useWorkerStore } from '../../stores/index'
+import { onMounted } from 'vue'
 import EditItemBlock from './components/EditBLock.vue';
 import { storeToRefs } from 'pinia';
 import BranchTree from '@/components/BranchTree.vue';
 
 const store = useWorkerStore();
 const {
-    users,
-    catalog,
     current_catalog,
-    show_branch_info,
 } = storeToRefs(store)
  
 onMounted(() => {
     store.getBranches();
 })
-
-
 </script>
 
 <template>
     <main>
-        <BranchTree style="width:350px;"></BranchTree>
-        <EditItemBlock style="width: calc(100% - 350px);" :row="current_catalog"/>
+        <section class="sidebar">
+            <BranchTree />
+        </section>
+        <section class="content">
+            <EditItemBlock :row="current_catalog"/>
+        </section>
     </main>
 </template>
 
 <style scoped>
-main{
-    padding: 0px 20px;
+main {
     display: flex;
-    align-items: center;
-    flex-direction: row;
-    justify-content: start;
+    align-items: flex-start;
+    gap: 24px;
     height: 100%;
-    width: 100%;
+    width: calc(100% - 48px);
+    padding: 0 24px;
 }
 
+.sidebar {
+    flex-shrink: 0;
+    width: 320px;
+}
+
+.content {
+    flex: 1;
+    min-width: 0;
+}
 </style>

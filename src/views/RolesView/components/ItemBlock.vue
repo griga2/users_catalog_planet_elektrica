@@ -1,13 +1,9 @@
 <script setup>
-import { defineProps } from 'vue';
 import { storeToRefs } from 'pinia';
-import {useWorkerStore} from '../../../stores/index.js'
+import { useWorkerStore } from '../../../stores/index.js'
+
 const store = useWorkerStore();
-const {
-    users,
-    show_branch_info,
-    current_role,
-} = storeToRefs(store)
+const { current_role } = storeToRefs(store)
 
 const props = defineProps({
   role: {
@@ -18,29 +14,57 @@ const props = defineProps({
 </script>
 
 <template>
-    <section class="main_role_item" @click="current_role = role"
-        :class="{active: current_role?.id == role.id}">
-            <span style="margin-right: 5px;">{{ role.index }}</span><span class="role_name">{{ role.name }}</span>
-    </section>
+    <article class="role-item" @click="current_role = role" :class="{ active: current_role?.id == role.id }">
+        <span class="role-index">{{ role.index }}</span>
+        <span class="role-name">{{ role.name }}</span>
+    </article>
 </template>
 
 <style scoped>
-
-.main_role_item{
+.role-item {
     display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--color-bg);
+    border: 1px solid transparent;
 }
 
-* {
-    font-family: circe-bold;
-    font-size: 16px;
+.role-item:hover {
+    background: var(--color-hover-bg);
 }
 
-.main_role_item :hover{
-    background-color: #cbcbcb;
+.role-item.active {
+    background: var(--color-primary-light);
+    border-color: var(--color-primary);
 }
 
-.active{
-    background-color: #cbcbcb;
+.role-index {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    background: var(--color-card-bg);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
+    flex-shrink: 0;
 }
 
+.role-item.active .role-index {
+    background: var(--color-primary);
+    color: white;
+}
+
+.role-name {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    flex: 1;
+}
 </style>
