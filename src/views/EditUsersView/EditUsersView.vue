@@ -1,7 +1,6 @@
 <script setup>
-import {useWorkerStore} from '../../stores/index'
-import { computed, onMounted} from 'vue'
-import CatalogRow from './components/ItemBlock.vue';
+import { useWorkerStore } from '../../stores/index'
+import { onMounted } from 'vue'
 import EditItemBlock from './components/EditBLock.vue';
 import CheckUserBlock from './components/CheckUserBlock.vue';
 import { storeToRefs } from 'pinia';
@@ -9,51 +8,75 @@ import BranchTree from '@/components/BranchTree.vue';
 
 const store = useWorkerStore();
 const {
-    users,
-    catalog,
     current_catalog,
-    show_branch_info,
     current_user,
 } = storeToRefs(store)
  
 onMounted(() => {
     store.getBranches();
 })
-
-
-
-
 </script>
 
 <template>
-    <main class='main' style="display: flex; flex-direction: row;">
-        <BranchTree style="width:350px;">
-        </BranchTree>
-        <CheckUserBlock>
-        </CheckUserBlock>
-        <EditItemBlock 
-            :row="current_catalog" 
-            v-if="current_user"/>
-            <section v-else 
-            class="user_edit_block">
+    <main class="main">
+        <section class="sidebar">
+            <BranchTree />
+        </section>
+        <section class="users-list">
+            <CheckUserBlock />
+        </section>
+        <section class="content">
+            <EditItemBlock 
+                v-if="current_user"
+                :row="current_catalog" />
+            <div v-else class="empty-state">
+                <span class="empty-icon">👤</span>
+                <p>Выберите сотрудника для редактирования</p>
+            </div>
         </section>
     </main>
 </template>
 
 <style scoped>
-.main{
-    padding: 0px 20px;
+.main {
     display: flex;
-    align-items: center;
-    flex-direction: row;
-    justify-content: start;
+    align-items: flex-start;
+    gap: 16px;
     height: 100%;
-    width: 100%;
-    gap: 10px;
+    width: calc(100% - 48px);
+    padding: 0 24px;
 }
 
-.user_edit_block{
-    background-color: white;
+.sidebar {
+    flex-shrink: 0;
+    width: 320px;
 }
 
+.users-list {
+    flex-shrink: 0;
+    width: 380px;
+    height: 100%;
+    overflow: hidden;
+}
+
+.content {
+    flex: 1;
+    min-width: 0;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    color: var(--color-text-muted);
+    background: var(--color-card-bg);
+    border-radius: var(--radius-lg);
+    gap: 16px;
+}
+
+.empty-icon {
+    font-size: 64px;
+}
 </style>

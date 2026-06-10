@@ -27,71 +27,107 @@ onMounted(() => {
 })
 
 const input = (event) => {
-            debug('search')
-            store.SearchUser(event.target.value, !open.value, JSON.stringify(date.value));
-       }
+             debug('search')
+             store.SearchUser(event.target.value, !open.value, JSON.stringify(date.value));
+        }
 
 </script>
 
-
 <template>
-    <section class="search_bar">
-       <img  src="../../../assets/lupa.svg" 
-       @click="clickLupa()"
-       placeholder="Поиск" :height="25"> 
+    <section class="search-bar">
+       <button class="search-icon-btn" @click="clickLupa()">
+           <img src="../../../assets/lupa.svg" alt="Поиск" :height="20"> 
+       </button>
        <input ref="serch_focus"
        @change="(event) => input(event)" 
        v-model="inputText"
-       type="text"/>
+       type="text"
+       placeholder="Поиск сотрудников..." />
        <VueDatePicker v-if="open" v-model="date" range 
        :enable-time-picker="false"
        :format="'dd.MM.yyyy'"
-       style="width: 340px; margin-right: 10px;" 
+       class="date-picker"
        @update:model-value="() => {
         debug('chenge');
         input({target:{value:inputText}});
        }"/>
-       <img src="../../../assets/calender.svg" 
-       @click="open = !open"
-       placeholder="Выбор даты" :height="25"> 
+       <button class="calendar-icon-btn" @click="open = !open">
+           <img src="../../../assets/calender.svg" alt="Календарь" :height="20"> 
+       </button>
     </section>
 </template>
 
 <style scoped>
-
-section{
-    width: calc(100% - 20px);
-    height: 50px;
-    background-color: white;
-    border-radius: 6px;
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     width: 100%;
+    padding: 8px 16px;
+    background: var(--color-card-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    height: 48px;
 }
 
-.search_bar{
+.search-bar:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.search-icon-btn,
+.calendar-icon-btn {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    padding: 10px;
+    border-radius: var(--radius-md);
+    transition: background 0.2s;
 }
 
-input{
-    border: 0px;
-    width: 100%;
-    font-size: 20px;
-    padding-left: 10px;
-    margin: 5px;
+.search-icon-btn:hover,
+.calendar-icon-btn:hover {
+    background: var(--color-hover-bg);
 }
 
-input:hover{
+.search-icon-btn img,
+.calendar-icon-btn img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+input {
+    border: none;
+    flex: 1;
+    font-size: var(--font-size-base);
+    font-family: 'Circe', sans-serif;
+    color: var(--color-text);
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+input::placeholder {
+    color: var(--color-text-muted);
+}
+
+input:focus {
     outline: none;
-    inline-size: none;
 }
 
-input:active{
-    outline: none;
-    inline-size: none;
+.date-picker {
+    margin-left: 8px;
 }
 
+.date-picker :deep(.dp__input) {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 4px 8px;
+    font-size: var(--font-size-sm);
+    height: 32px;
+}
 </style>

@@ -1,100 +1,81 @@
 <script setup>
-import { useRoute } from 'vue-router';
+import { useRoute, RouterLink } from 'vue-router';
 import { useUserStore } from '@/stores/user';
-import { defineStore, storeToRefs } from 'pinia';
+import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 
-
 const store = useUserStore();
-const {
-    user
-} = storeToRefs(store);
+const { user } = storeToRefs(store);
 const route = useRoute()
 
-const names_editor = [
-    'editor',
-    'edit_workers',
-    'edit_roles'
-]
+const names_editor = ['editor', 'edit_workers', 'edit_roles']
 
-const checkLogin = computed(() => {
-    return user.token != '';
-})
-
-const chectEditBlockIsWisible = computed((block) => {
-    return block
-})
+const checkLogin = computed(() => user.value.token != '')
 
 const edit_roles = ['hr'];
-
 </script>
 
 <template>
-    <main style="height: 30px;">
-        <RouterLink  v-if="!names_editor.includes(route.name)"
-        :to="'/catalog'">
-            <button  class="header_button" style="">
-                Справочник
-            </button>
+    <nav class="breadcrumbs">
+        <RouterLink v-if="!names_editor.includes(route.name)"
+            :to="'/catalog'"
+            class="breadcrumb-link"
+            :class="{ active: route.name === 'catalog' }">
+            Справочник
         </RouterLink>
 
-        <RouterLink v-if="names_editor.includes(route.name)"
-            :to="'/edit_struct'">
-            <button class="header_button" >
-                Структура 
-            </button>
-        </RouterLink>
+        <template v-if="names_editor.includes(route.name)">
+            <RouterLink
+                :to="'/edit_struct'"
+                class="breadcrumb-link"
+                :class="{ active: route.name === 'editor' }">
+                Структура
+            </RouterLink>
 
-        <RouterLink v-if="names_editor.includes(route.name)"
-            :to="'/edit_workers'">
-            <button class="header_button">
+            <RouterLink
+                :to="'/edit_workers'"
+                class="breadcrumb-link"
+                :class="{ active: route.name === 'edit_workers' }">
                 Сотрудники
-            </button>
-        </RouterLink>
+            </RouterLink>
 
-        <RouterLink v-if="names_editor.includes(route.name)"
-            :to="'/edit_roles'">
-            <button class="header_button">
+            <RouterLink v-if="edit_roles.includes(user?.role?.name)"
+                :to="'/edit_roles'"
+                class="breadcrumb-link"
+                :class="{ active: route.name === 'edit_roles' }">
                 Роли
-            </button>
-        </RouterLink>
-    </main>
-
+            </RouterLink>
+        </template>
+    </nav>
 </template>
 
 <style scoped>
-
-.header_button{
-    font-weight: 800; background-color: white; height: 30px;
-}
-
-main{
-    width: 100%;
+.breadcrumbs {
     display: flex;
-    flex-direction: row;
-    gap: 20px;
-    background-color: white;
-    padding:8px;
-    border-radius: 10px;
-    justify-content: start;
     align-items: center;
+    gap: 8px;
+    height: 30px;
 }
 
-button{
-    border-radius: 8px;
-    background-color: white;
-    border: 0px;
-    font-size: 28px;
+.breadcrumb-link {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+    white-space: nowrap;
 }
 
-.inter_text{
-    border-radius: 8px;
-    background-color: white;
-    border: 0px;
-    font-size: 28px;
-    padding: 5px;
-    font-family: circe;
-    text-align: center;
+.breadcrumb-link:hover {
+    color: var(--color-primary);
+    background-color: var(--color-primary-light);
 }
 
+.breadcrumb-link.active {
+    color: var(--color-primary);
+    background-color: var(--color-primary-light);
+    font-weight: var(--font-weight-semibold);
+}
 </style>

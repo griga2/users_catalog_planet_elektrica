@@ -3,85 +3,104 @@ import { defineProps } from 'vue'
 import EditTimeComponent from './EditTimeComponent.vue';
 
 const emits = defineEmits(['open'])
-const props = defineProps(['branch']);
+const props = defineProps(['branch'])
+
 const time_convert = (time) => {
-    if (typeof time == 'string') {
-        const n_time = new Date(time);
-         return ' ' 
-         + n_time.getHours().toString().padStart(2,'0') 
-         + ":" 
-         + n_time.getMinutes().toString().padStart(2,'0');
-    } else return '00:00';
+    if (typeof time === 'string') {
+        const n_time = new Date(time)
+        return n_time.getHours().toString().padStart(2, '0') 
+            + ':' 
+            + n_time.getMinutes().toString().padStart(2, '0')
+    }
+    return '—'
 }
 
+const has_schedule = (openning, closing) => {
+    return openning != null && closing != null
+}
+
+const format_time_range = (openning, closing) => {
+    if (!has_schedule(openning, closing)) return 'Выходной'
+    return time_convert(openning) + ' – ' + time_convert(closing)
+}
 </script>
 
 <template>
-    <main v-if="!props.branch.edit_time">
-        <section>
-            <article class="time_row">
-                <span>пн - пт</span>
-                <article>
-                    <span> {{ time_convert(props.branch?.monFridayOpenning) + ' - ' }}</span>
-                    <span> {{ time_convert(props.branch?.monFridayClosing) }}</span>
-                </article>
-                
-            </article>
-        </section>
-        <section  v-if="props.branch.different">
-            <article class="time_row">
-                <span>сб - вс</span>
-                <article>
-                    <span v-if="!props.branch.close_on_holiday">{{ time_convert(props.branch?.saturdayOpenning) + ' - ' }}</span>
-                    <span v-if="!props.branch.close_on_holiday">{{ time_convert(props.branch?.saturdayClosing) }}</span>
-                    <span v-else style="color: red;">Выходной</span>
-                </article>
-            </article>
-        </section>
-        <section v-else>
-            <article class="time_row">
-                <span>сб</span>
-                <span v-if="props.branch.Saturday"> {{ time_convert(props.branch?.saturdayOpenning) + ' - ' }}</span>
-                <span v-if="props.branch.Saturday"> {{ time_convert(props.branch?.saturdayClosing) }}</span>
-                <span v-else style="color: red;">Выходной</span>
-            </article>
-            <article class="time_row">
-                <span>вс</span>
-                <span v-if="props.branch.Sunday"> {{ time_convert(props.branch?.sundayOpenning) + ' - ' }}</span>
-                <span v-if="props.branch.Sunday"> {{ time_convert(props.branch?.sundayClosing) }}</span>
-                <span v-else style="color: red;">Выходной</span>
-            </article>
-        </section>
-    </main>
-    <section v-else >
-        <EditTimeComponent>
-
-        </EditTimeComponent>
-    </section>
-   
+    <div class="work-time">
+        <template v-if="!props.branch.edit_time">
+            <div class="schedule-row">
+                <span class="day-label">Пн — Пт</span>
+                <span class="time-value">{{ format_time_range(branch?.monFridayOpenning, branch?.monFridayClosing) }}</span>
+            </div>
+            
+            <div v-if="!props.branch.different" class="schedule-row" :class="{ holiday: branch.close_on_holiday }">
+                <span class="day-label">Сб — Вс</span>
+                <template v-if="!branch.close_on_holiday">
+                    <span class="time-value">{{ format_time_range(branch?.saturdayOpenning, branch?.saturdayClosing) }}</span>
+                </template>
+                <span v-else class="holiday-label">Выходной</span>
+            </div>
+            
+            <template v-else>
+                <div class="schedule-row" :class="{ holiday: !branch.Saturday }">
+                    <span class="day-label">Сб</span>
+                    <template v-if="branch.Saturday">
+                        <span class="time-value">{{ format_time_range(branch?.saturdayOpenning, branch?.saturdayClosing) }}</span>
+                    </template>
+                    <span v-else class="holiday-label">Выходной</span>
+                </div>
+                <div class="schedule-row" :class="{ holiday: !branch.Sunday }">
+                    <span class="day-label">Вс</span>
+                    <template v-if="branch.Sunday">
+                        <span class="time-value">{{ format_time_range(branch?.sundayOpenning, branch?.sundayClosing) }}</span>
+                    </template>
+                    <span v-else class="holiday-label">Выходной</span>
+                </div>
+            </template>
+        </template>
+        
+        <EditTimeComponent v-else :branch="branch" />
+    </div>
 </template>
 
 <style scoped>
-
-.time_row{
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    justify-content: space-between;
-    width: 100%;
-    align-items: center;
-}
-
-main{
+.work-time {
+    width: 200px;
     display: flex;
     flex-direction: column;
-    width: 200px;
+    gap: 8px;
 }
 
-* {
-    font-family: circe-bold;
-    font-size: 20px;
+.schedule-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+    min-height: 40px;
 }
 
+.schedule-row.holiday {
+    background: var(--color-error-light);
+}
+
+.day-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    min-width: 70px;
+}
+
+.time-value {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.holiday-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-error);
+    font-weight: var(--font-weight-semibold);
+}
 </style>
-

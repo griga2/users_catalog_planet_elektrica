@@ -1,337 +1,310 @@
 <script setup>
-import { defineProps, defineEmits, ref, onMounted, onUpdated } from 'vue';
+import { defineProps, defineEmits, ref, onMounted } from 'vue';
 import IconContact from './IconContact.vue'
 import { debug } from '@/utils/debug'
+import { storeToRefs } from 'pinia'
+import {useWorkerStore} from '../../../stores/index.js'
+
+const store = useWorkerStore()
+const { finding } = storeToRefs(store)
+
 const props = defineProps({
   user: { type: Object, required: true }
 })
 const emits = defineEmits(['click_open_dop', 'click', 'click_dep'])
 
+const vis_ing = ref(true)
+const img_block = ref(null)
 
-
-import { storeToRefs } from 'pinia';
-import {useWorkerStore} from '../../../stores/index.js'
-const store = useWorkerStore();
-const {
-    finding
-} = storeToRefs(store)
+const S3_URL = 'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea'
 
 const copy = (value) => {
     navigator.clipboard.writeText(value)
-        .then(text => {
-            // `text` содержит текст, прочитанный из буфера обмена
-        })
-        .catch(err => {
-            // возможно, пользователь не дал разрешение на чтение данных из буфера обмена
-            debug('Something went wrong', err);
-        });
+        .then(() => debug('Copied'))
+        .catch(err => debug('Copy failed', err))
 }
 
 const GetBirthdayday = (_date) => {
-    // debug(typeof (_date))
-    const date = new Date(_date);
-    debug(date.getDate().toString());
-    debug(date);
-    //
-    return date?.getDate().toString().padStart(2,'0') + '.' + (date?.getMonth() + 1).toString().padStart(2,'0');
+    if (!_date) return '—'
+    const date = new Date(_date)
+    return date?.getDate().toString().padStart(2,'0') + '.' + (date?.getMonth() + 1).toString().padStart(2,'0')
 }
 
 const openMailClient = (email) => {
-    debug('email')
-    window.location.href = "mailto:" + email;
+    window.location.href = "mailto:" + email
 }
-
-const main_contact = ['workPhone','email']
-
-const chengevis = () => {
-    // console.log('ua')
-    vis_ing.value = false;
-}
-
-const img_block = ref(null)
 
 const chechInleave = () => {
     const nowDate = new Date()
     if (props.user.LeaveStart && props.user.LeaveFinish) {
         return Date.parse(props.user.LeaveStart) < nowDate && Date.parse(props.user.LeaveFinish) > nowDate
     }
-    
-    return false;
-
+    return false
 }
+
+const isError = () => {
+    vis_ing.value = false
+}
+
 onMounted(() => {
-    // сonsole.log(props.user);
-    // console.log(img_block.value);
-    debug(props.user?.Photo?.length);
-    debug(import.meta.env.VITE_S3_URL + props.user.Photo + '?t=' + new Date().getTime());
-    img_block.value.onerror = chengevis;
-    vis_ing.value = true;
+    if (img_block.value) {
+        img_block.value.onerror = isError
+    }
+    vis_ing.value = true
 })
 
-const vis_ing = ref(true);
+const main_contact = ['workPhone','email']
 </script>
 
 <template>
-    <section class="prod_cadr" :class="{open:props.user.visible_dop}">
-        <section style="display: flex; flex: 35% 65%">
-            <section class="photo" style="z-index: 10; padding: 0px; margin: 0px; background-color: white; width: 180px; display: flex; flex-direction: row; align-items: start; justify-content: center; margin-left: -1px;">
-                <img v-if="vis_ing" ref="img_block" height="160px" style=" border-radius: 6px 0px 0px 6px; object-fit: cover;  max-width: 160px;"
-                :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + $props.user?.Photo + '?t=' + new Date().getTime()">
-                <img v-if="!vis_ing" src="../../../assets/userProfile.svg" height="160px" style="border-radius: 8px 0px 0px 8px;">
-                <!-- <img v-if="!vis_ing" :src="`/img/bookicon.svg`" alt="" style="width: 100px; height: 70px;"> -->
-            </section>
-            <section class="main" style="z-index: 10; width: 100%;">
-                <section class="head_block" style="z-index: 10;">
-                    <section class="contact_block">
-                        <article><h2>{{props.user?.full_name}}</h2></article>
-                        <article class="work" 
-                            v-if="finding"
-                            @click="emits('click_dep',{depID:props.user?.DepartamentID, userID: props.user.ID})"><span>{{props.user?.department_name}}</span></article>
-                        <article class="work"><span>{{props.user?.role?.name}}</span></article>
-                        <section style="display: flex; flex-direction: column; flex-wrap: wrap; width: 100%; max-height: 120px; margin: 10px;" >
-                            <article v-for="contact of props.user.Contacs"> 
-                                <article v-if="main_contact.includes(contact[1]) && contact[0] && contact[2] != ''" style="display: flex; flex-direction: row;">
-                                    <IconContact :value="contact[1]">   
-                                    </IconContact>
-                                    <span style="font-size: 20px;">{{ contact[2] }}</span>
-                                </article>
-                            </article>
-                        </section>
-                    </section>
-                    <section>
-                        <article style="display: flex; flex-direction: row; gap: 5px;padding: 20px; font-family: circe;">
-                            <img src="../../../assets/cake.svg">
-                            <span>{{ GetBirthdayday(props.user?.Birthday) }}</span>
-                        </article>
-                    </section>
-                </section>
-                <section class="status_block" style="font-size: 16px;" v-if="props.user?.Bio">
-                    {{ props.user?.Bio }}
-                </section>
-                <section style="width: 100%;">
-                        <article><h3>{{props.user?.number}}</h3></article>
-                </section>
-                <section v-if="chechInleave()" style="padding: 20px 5px; margin-top: -25px;">
-                    <h4>В отпуске с {{ $props.user.LeaveStart?.substring(5, 10) }} по {{ $props.user.LeaveFinish?.substring(5, 10) }}</h4>
-                    <span>{{ $props.user.LeaveText }}</span>
-                </section>
-            </section>
-        </section>
-    </section>  
-
+    <article class="worker-card" :class="{ 'on-leave': chechInleave() }">
+        <div class="card-left">
+            <div class="photo-wrapper">
+                <img v-if="vis_ing" ref="img_block" class="photo" :src="S3_URL + $props.user?.Photo + '?t=' + new Date().getTime()" @error="isError">
+                <div v-else class="photo-placeholder">
+                    <span class="initials">{{ $props.user?.full_name?.charAt(0) }}</span>
+                </div>
+                <span v-if="chechInleave()" class="status-badge on-vacation">В отпуске</span>
+            </div>
+        </div>
+        
+        <div class="card-content">
+            <div class="card-header">
+                <div>
+                    <h3 class="name">{{ props.user?.full_name }}</h3>
+                    <span class="role">{{ props.user?.role?.name }}</span>
+                </div>
+                <span v-if="props.user?.number" class="employee-number">#{{ props.user?.number }}</span>
+            </div>
+            
+            <article v-if="finding && props.user?.DepartamentID" class="dept-row" @click="emits('click_dep', { depID: props.user?.DepartamentID, userID: props.user.ID })">
+                <span class="contact-icon">🏢</span>
+                <span class="dept-name">{{ props.user?.department_name }}</span>
+            </article>
+            
+            <div class="contacts-row">
+                <template v-for="contact of props.user.Contacs" :key="contact[1]">
+                    <a v-if="main_contact.includes(contact[1]) && contact[0] && contact[2] != ''" class="contact-link" :href="contact[1] === 'email' ? 'mailto:' + contact[2] : 'tel:' + contact[2]">
+                        <IconContact :value="contact[1]"></IconContact>
+                        <span class="contact-value">{{ contact[2] }}</span>
+                    </a>
+                </template>
+            </div>
+            
+            <a v-if="props.user?.Birthday" class="birthday-link">
+                <span class="contact-icon">🎂</span>
+                <span>{{ GetBirthdayday(props.user?.Birthday) }}</span>
+            </a>
+            
+            <p v-if="props.user?.Bio" class="bio">{{ props.user?.Bio }}</p>
+            
+            <div v-if="chechInleave()" class="leave-info">
+                <span class="leave-dates">
+                    {{ $props.user.LeaveStart?.substring(5, 10) }} — {{ $props.user.LeaveFinish?.substring(5, 10) }}
+                </span>
+                <span v-if="$props.user.LeaveText" class="leave-text">{{ $props.user.LeaveText }}</span>
+            </div>
+        </div>
+    </article>  
 </template>
 
 <style scoped>
-
-.catalog {
-    width: calc(30% - 40px);
-    height: calc(100% - 40px);
-    background-color: white;
-    border-radius: 0px 0px 0px 0px;
-}
-
-.head_block{
+.worker-card {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    background: var(--color-card-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    transition: all 0.2s;
+    min-height: 140px;
 }
 
-span {
+.worker-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
 }
 
-.status_block {
-    font-family: circe;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding: 5px;
-
-    white-space: pre-wrap;
+.worker-card.on-leave {
+    border-left: 3px solid var(--color-warning);
 }
 
-.contact_block {
-    font-family: circe;
-    gap: 10px;
-}
-
-.wave_block{
+.card-left {
+    flex-shrink: 0;
+    width: 120px;
+    background: var(--color-bg);
     display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: start;
-    /* padding: 10px; */
-    gap: 5px;
-    width: 100%;
-    color: white;
-    font-family: circe
-
-}
-
-.active{
-    background-color: #4eed0f;
-}
-
-.artiv_ball{    
-    position: absolute;
-    height: 26px;
-    width: 26px;
-    background-color: #a3a3a3;
-    border-radius: 100px;
-    z-index: 30;
-    left: -15px;
-    top: -5px
-}
-
-.button_open_dop{
-    position: relative;
-    
-}
-
-.rotate_arrow{
-    transform: rotate(180deg);
-    transition: 600ms;
-}
-
-.birthday_row{
-    display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 5px;
 }
 
-.birthday_row span{
-    padding-top: 4px;
-    margin-top: 4px;
-}
-
-.arrow{
-    position: absolute;
-    top: -20px;
-    border-radius: 100px;
-    background-color: #a3a3a3;
-    width: 30px;
-    height: 30px;
-    padding: 8px;
-    transition: all 0.3s;
-    left: calc(50%);
-    z-index: 20;
-}
-
-.close{
-    visibility: hidden;
-    height: 200px;
-    width: 100%;
-}
-
-.prod_cadr{
-    display: flex;
-    flex-direction: column;
-    border-radius: 6px;
-    /* align-items: center */
-    justify-content: space-between;
-    transition: all 0.3s;
-    width: 100%;
-}
-
-.dropdown{
+.photo-wrapper {
+    position: relative;
+    width: 100px;
     height: 100px;
-    border: 1px sodlid black;
-    border-radius: 0px 0px 0px 0px;
-    z-index: 1;
-    position: relative;
-    top: 180px;
 }
-
-.do_row{
-    display: flex;
-    gap:4px;
-    align-items: center;
-    justify-content: center;
-}
-
-.main {
-    border-radius: 0px 6px 6px 0px;
-    padding: 0px;
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    padding-left: 10px;
-    display: flex;
-    transition: all 0.3s;
-    min-height: 100px;
-    width: 100%;
-    margin: 0px;
-}   
 
 .photo {
-    border-radius: 8px 0px 0px 8px;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-lg);
+    object-fit: cover;
 }
 
-.contacts{
-    margin-top: 70px;
+.photo-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-lg);
+    background: var(--color-primary-light);
     display: flex;
-    flex-direction: row;
     align-items: center;
-    justify-content: start;
-
+    justify-content: center;
 }
 
-.contacts article{
-    display: flex;
-    height: 20px;
-    margin-right: 30px;
-    min-width: 150px;
-    flex-direction: row;
-    justify-content: start;
-    gap: 5px;
-    font-family: Cer;
-    font-family: circe;
-    
+.initials {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
 }
 
-.contacts image{
-    display: flex;
-    margin-right: 10px;
+.status-badge {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 10px;
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
 }
 
-.work{
-    color: rgba(0, 0, 0, 0.3);
-    font-family: circe-extrabold;
-    font-size: 18px;
-    text-transform: uppercase;
-    margin-top: -10px;
+.status-badge.on-vacation {
+    background: var(--color-warning);
+    color: white;
 }
 
-.text {
-    min-height: 200px;
+.card-content {
+    flex: 1;
+    padding: 16px 20px;
     display: flex;
     flex-direction: column;
-    padding-top: 20px;
-    width: 45%;
+    gap: 10px;
+    overflow: hidden;
 }
 
-.doing {
+.card-header {
     display: flex;
-    flex-direction: column;
-    padding-top: 20px;
-    min-height: 200px;
-    height: 200px;
-    
-    align-items: end;
-    justify-content: start;
-    width: 40%;
-    font-family: circe;
-    padding-right: 20px;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
 }
 
-h2 {
-    font-family: circe-bold;
-    font-size: 36px;
+.name {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    line-height: 1.2;
+    margin: 0;
 }
 
-a{
+.role {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+}
+
+.employee-number {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
+}
+
+.dept-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.dept-row:hover {
+    background: var(--color-hover-bg);
+}
+
+.dept-name {
+    font-size: var(--font-size-sm);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+.contacts-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.contact-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
     text-decoration: none;
-    color: black;
+    transition: color 0.15s;
 }
 
+.contact-link:hover {
+    color: var(--color-primary);
+}
+
+.birthday-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.contact-icon {
+    font-size: var(--font-size-base);
+}
+
+.contact-value {
+    font-variant-numeric: tabular-nums;
+}
+
+.bio {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin: 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.leave-info {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 12px;
+    background: var(--color-warning-light);
+    border-radius: var(--radius-md);
+    margin-top: auto;
+}
+
+.leave-dates {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-warning);
+}
+
+.leave-text {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-top: 4px;
+}
 </style>
