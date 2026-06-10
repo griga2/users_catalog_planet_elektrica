@@ -1,9 +1,15 @@
 <script setup>
-import { useUserStore } from '@/stores/user'
-import { computed, onMounted, ref } from 'vue'
-import { storeToRefs } from 'pinia'
-import Breadcrumbs from './components/Breadcrumbs.vue'
-import { RouterView, useRoute } from 'vue-router'
+import Breadcrumbs from './components/Breadcrumbs.vue';
+import { RouterLink, RouterView } from 'vue-router'
+import { useUserStore } from '../../stores/user.js'
+import { computed, onMounted, ref} from 'vue'
+import { storeToRefs } from 'pinia';
+import Button from 'naive-ui/es/button/src/Button';
+// import LoginModal from '../'
+const store = useUserStore();
+const {
+  user,
+} = storeToRefs(store); 
 
     onMounted(async () => {
         await store.getUser();
