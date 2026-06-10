@@ -10,91 +10,102 @@ debug(props.branch)
 
 const copy = (value) => {
     navigator.clipboard.writeText(value)
-        .then(text => {
-            
-        })
-        .catch(err => {
-            debug('Something went wrong', err);
-        });
+        .then(() => debug('Copied'))
+        .catch(err => debug('Copy failed', err));
 }
-
 </script>
 
 <template>
-    <section class="main">
-        <section class="contacts">
-            <h2>{{ props.branch.name }}</h2>
-            
-            <article class="flex_row ">
-                <img src="../../../assets/adres_grey.svg" class="order_0" height="18">
-                <a class="adres order_1">{{ props.branch.adress || 'Адрес не указан' }}</a>
-            </article>
+    <section class="branch-info">
+        <h2 class="branch-name">{{ props.branch.name }}</h2>
+        
+        <div class="info-content">
+            <div class="contact-info">
+                <article class="info-row" @click="copy(props.branch.adress)">
+                    <span class="info-icon">📍</span>
+                    <span class="info-value">{{ props.branch.adress || 'Адрес не указан' }}</span>
+                </article>
 
-            <article class="flex_row">
-                <img src="../../../assets/phone_grey.svg" class="order_0" height="22">
-                <a :href="'tel:' + props.branch.phone" class="phone order_1">{{ props.branch.phone || 'Номер не указан' }}</a>
-            </article>
-        </section>
-        <section class="time_block">
-            <WorkTimeComponent :branch="props.branch"></WorkTimeComponent>
-        </section>
+                <article class="info-row" v-if="props.branch.phone">
+                    <span class="info-icon">📞</span>
+                    <a :href="'tel:' + props.branch.phone" class="info-link">{{ props.branch.phone }}</a>
+                </article>
+            </div>
+            
+            <div class="work-time">
+                <WorkTimeComponent :branch="props.branch"></WorkTimeComponent>
+            </div>
+        </div>
     </section>
 </template>
 
 <style scoped>
-
-.time_block{
-    width: 20%;
-    display: flex;
-    justify-content: end;
-}
-.main{
-    display: flex;
-    width: 100%;
-    height: 100%;
-    padding: 10px;
+.branch-info {
+    background: var(--color-card-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    padding: 16px 20px;
 }
 
-.contacts{
+.branch-name {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin: 0 0 16px 0;
+}
+
+.info-content {
     display: flex;
-    width: 80%;
-    height: 100%;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.contact-info {
+    display: flex;
     flex-direction: column;
+    gap: 12px;
+    flex: 1;
 }
 
-.order_0{
-    order: 0;
-}
-.order_2{
-    order: 3;
-}
-.order_1{
-    order: 3;
-}
-* {
-    color: black;
-}
-
-h2 {
-    font-family: circe-bold;
-    font-size: 28px;
-}
-
-.flex_row{
+.info-row {
     display: flex;
-    flex-direction: row;
     align-items: center;
-    justify-content: start;
-    
-    gap: 5px;
-    width: 200px;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background 0.15s;
 }
 
-a{
-    font-family: circe-bold;
-    color: #a3a3a3;
+.info-row:hover {
+    background: var(--color-hover-bg);
+}
+
+.info-icon {
     font-size: 18px;
-    text-decoration: none;
+    flex-shrink: 0;
 }
 
+.info-value {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+}
+
+.info-link {
+    font-size: var(--font-size-base);
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+}
+
+.info-link:hover {
+    text-decoration: underline;
+}
+
+.work-time {
+    flex-shrink: 0;
+    min-width: 180px;
+}
 </style>

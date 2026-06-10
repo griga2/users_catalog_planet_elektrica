@@ -11,15 +11,9 @@ const {
   user,
 } = storeToRefs(store); 
 
-    onMounted(async () => {
-        await store.getUser();
-        //   if (user.value) 
-    })
-    const pass = ref('')
-    const login = ref('')
-    const bio = ref('')
-    const open_model = ref(false)
-    const open_bio_modal = ref(false)
+const store = useUserStore()
+const route = useRoute()
+const { user } = storeToRefs(store)
 
 onMounted(async () => {
     await store.getUser()
@@ -40,100 +34,85 @@ const menu_items = computed(() => [
 ])
 
 const is_active = (name) => route.name === name
-const requires_auth = (name) => ['editor', 'edit_workers', 'edit_roles'].includes(name)
 </script>
 
 <template>
-    <section >
-        <n-modal class="modal_layout" v-model:show="open_model" >
-            <n-card
-                style="width: 600px; gap: 20px; justify-content: center; align-items: center;"
-                title="Авторизация"
-                :bordered="false"
-                size="huge"
-                role="dialog"
-                aria-modal="true"
-            >
+    <!-- Login Modal -->
+    <n-modal v-model:show="open_login" preset="dialog" title="Авторизация">
+        <div class="auth-form">
+            <n-input v-model:value="login" placeholder="Логин" />
+            <n-input v-model:value="pass" type="password" placeholder="Пароль" @keyup.enter="store.Login(login, pass)" />
+            <n-button type="primary" block @click="store.Login(login, pass)">Войти</n-button>
+        </div>
+    </n-modal>
 
-                <n-input 
-                    v-model:value="login"
-                    type="text"
-                    style  = "margin: 10px;"
-                    placeholder="Логин">
-                </n-input>
+    <!-- Bio Modal -->
+    <n-modal v-model:show="open_bio" preset="dialog" title="Изменить описание">
+        <n-input v-model:value="bio" type="textarea" placeholder="Описание" :autosize="{ minRows: 3, maxRows: 6 }" />
+        <template #action>
+            <n-button type="primary" @click="store.UpdateBio(bio, bio)">Сохранить</n-button>
+        </template>
+    </n-modal>
 
-                <n-input
-                    v-model:value="pass"
-                    type="text"
-                    style  = "margin: 10px;"
-                    placeholder="Пароль">
-                </n-input>
-                <n-button @click="() => {store.Login(login,pass); open_model= !open_model}" style="width: 200px; margin-left: 30%; margin-right: auto;">
-                    Войти
-                </n-button >
-        
-            </n-card>
-        </n-modal>
-    </section>
-    <section>
-        <n-modal class="modal_layout" v-model:show="open_bio_modal">
-        <n-card
-            style="width: 600px"
-            title="Измениене личного описания"
-            :bordered="false"
-            size="huge"
-            role="dialog"
-            aria-modal="true"
-        >
-
-        <n-input 
-            v-model:value="bio"
-            type="textarea" style="width: 600px; font-size: 22px;"
-            placeholder="Описание">
-        </n-input>
-        
-        <n-button @click="store.UpdateBio(bio, bio)">
-            Сохранить
-        </n-button >
-    
-        </n-card>
-        </n-modal>
-    </section>
-    <section class="back_color">
-        <header class="header">
-            <Breadcrumbs></Breadcrumbs>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" :class="{ open: active_menu }">
+            <div class="sidebar-header">
+                <RouterLink to="/catalog" class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">Planet Electrica</span>
+                </RouterLink>
+            </div>
             
-            <span v-if="user?.name" @click="open_bio_modal = true" style="width: 250px; background-color:">{{ user?.name }}</span>
-            <Button class="exit_inter_bt" v-if="!user?.name" @click="open_model = true" > Войти</Button>
-            <Button class="exit_inter_bt" v-if="user?.name" @click="store.userExit()" > Выйти</Button> 
-        </header>
-    </section>  
-    <main class="main">
-        <RouterView/>
-    </main>
+            <nav class="sidebar-nav">
+                <template v-for="item in menu_items" :key="item.name">
+                    <RouterLink
+                        :to="item.path"
+                        class="nav-item"
+                        :class="{ active: is_active(item.name) }"
+                    >
+                        <span class="nav-icon">
+                            <template v-if="item.icon === 'catalog'">📋</template>
+                            <template v-else-if="item.icon === 'struct'">🏗️</template>
+                            <template v-else-if="item.icon === 'employees'">👥</template>
+                            <template v-else>🔑</template>
+                        </span>
+                        <span class="nav-label">{{ item.label }}</span>
+                    </RouterLink>
+                </template>
+            </nav>
+        </aside>
+
+        <div class="main-wrapper">
+            <!-- Header -->
+            <header class="header">
+                <button class="menu-toggle" @click="active_menu = !active_menu">☰</button>
+                <Breadcrumbs />
+                <div class="header-actions">
+                    <n-button v-if="!user?.name" quaternary @click="open_login = true">
+                        <template #icon>🔐</template>
+                        Войти
+                    </n-button>
+                    <div v-else class="user-menu" @click="open_bio = true">
+                        <n-avatar round :size="32">{{ user?.name?.charAt(0) }}</n-avatar>
+                        <span class="user-name">{{ user?.name }}</span>
+                    </div>
+                    <n-button v-if="user?.name" quaternary @click="store.userExit()">
+                        <template #icon>🚪</template>
+                    </n-button>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <RouterView />
+            </main>
+        </div>
+    </div>
 </template>
 
 <style scoped>
-
-.exit_inter_bt{
-    font-style: 22px;
-    font-weight: 500;
-}
-
-.main{
-    width: 100%; 
-    height: calc(100% - 50px);
-    background-color: #ebebeb;
-    padding-top: 10px;
-    padding-left: 10%;
-    padding-right: 10%;
-}
-
-.header {
-    height: 50px;
-    background-color: white;
-    padding: 20px 14% 20px 13%;
-    margin: 0px;
+.layout {
     display: flex;
     height: 100vh;
     width: 100%;
@@ -142,7 +121,7 @@ const requires_auth = (name) => ['editor', 'edit_workers', 'edit_roles'].include
 /* Sidebar */
 .sidebar {
     width: var(--sidebar-width);
-    background: var(--color-sidebar-bg);
+    background: var(--color-card-bg);
     border-right: 1px solid var(--color-border);
     display: flex;
     flex-direction: column;
@@ -158,8 +137,10 @@ const requires_auth = (name) => ['editor', 'edit_workers', 'edit_roles'].include
 .logo {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 20px;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--color-text);
+}
 
 .logo-icon {
     font-size: 24px;
@@ -217,7 +198,7 @@ const requires_auth = (name) => ['editor', 'edit_workers', 'edit_roles'].include
 /* Header */
 .header {
     height: var(--header-height);
-    background: var(--color-header-bg);
+    background: var(--color-card-bg);
     border-bottom: 1px solid var(--color-border);
     display: flex;
     align-items: center;

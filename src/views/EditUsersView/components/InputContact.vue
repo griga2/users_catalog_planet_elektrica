@@ -1,13 +1,13 @@
 <script setup>
-    import { defineProps, defineModel, onMounted, ref,defineEmits } from 'vue';
-    import { debug } from '@/utils/debug';
+    import { defineProps, defineModel, defineEmits } from 'vue';
+    
     const props = defineProps({
-        id: { type: [String, Number], required: true },
-        type: { type: String, required: true },
-        target_value: { type: String, default: '' }
+        type: { type: String, required: true }
     });
+    
     const model = defineModel();
     const emits = defineEmits(['change_contact']);
+    
     const SwithTitle = () => {
         switch(props.type) {
             case 'mPhone': return 'Личный телефон';
@@ -16,43 +16,38 @@
             default: return 'Контактная информация'
         }
     }
-
-    onMounted(() => {
-        debug(props.target_value);
-    })
 </script>
 
 <template>
-    <main class="input_block">
-        <span>{{ SwithTitle() }}</span>
+    <div class="input-contact">
+        <label class="input-contact__label">{{ SwithTitle() }}</label>
         <n-input 
             placeholder=" "
             v-model:value="model"
             @input="() => {emits('change_contact')}" 
-            class="main">
+            size="small"
+            class="input-contact__input">
         </n-input>
-    </main>
+    </div>
 </template>
     
 <style scoped>
-
-main{
+.input-contact {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: start;
+    gap: 4px;
     width: 100%;
 }
 
-.input_block{
-    width: 250px;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: start;
-}
-.input_block span{
-    color: #cbcbcb;
+.input-contact__label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
 }
 
+.input-contact__input {
+    width: 100%;
+}
 </style>

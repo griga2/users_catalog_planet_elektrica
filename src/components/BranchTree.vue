@@ -107,7 +107,6 @@ const is_editor = route.name === 'editor'
                 return true;
             })" v-bind:key="branch.id" >
                     <CatalogRow 
-                    
                         :row="branch"
                         :active_row="current_catalog" 
                         @click_arrow="(value) => {store?.clickArrow(value)}" 
@@ -179,19 +178,6 @@ const is_editor = route.name === 'editor'
 
 .tree-content::-webkit-scrollbar {
     width: 6px;
-}
-
-.catalog_branch_tree {
-    width: 300px;
-    height: calc(100% - 18px);
-    background-color: white;
-    overflow-y: scroll;
-    align-items: start;
-    justify-content: start;
-    border-radius: 10px;
-    margin-bottom: 14px;
-    padding-top: 8px;
-    padding-left: 5px;
 }
 
 .tree-content::-webkit-scrollbar-thumb {

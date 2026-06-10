@@ -16,52 +16,48 @@ const edit_roles = ['hr'];
 </script>
 
 <template>
-    <main style="height: 30px;">
-        <RouterLink  v-if="!names_editor.includes(route.name)"
-        :to="'/catalog'">
-            <button  class="header_button" style="">
-                Справочник
-            </button>
+    <nav class="breadcrumbs">
+        <RouterLink v-if="!names_editor.includes(route.name)"
+            :to="'/catalog'"
+            class="breadcrumb-link"
+            :class="{ active: route.name === 'catalog' }">
+            Справочник
         </RouterLink>
 
-        <RouterLink v-if="names_editor.includes(route.name)"
-            :to="'/edit_struct'">
-            <button class="header_button" >
-                Структура 
-            </button>
-        </RouterLink>
+        <template v-if="names_editor.includes(route.name)">
+            <RouterLink
+                :to="'/edit_struct'"
+                class="breadcrumb-link"
+                :class="{ active: route.name === 'editor' }">
+                Структура
+            </RouterLink>
 
-        <RouterLink v-if="names_editor.includes(route.name)"
-            :to="'/edit_workers'">
-            <button class="header_button">
+            <RouterLink
+                :to="'/edit_workers'"
+                class="breadcrumb-link"
+                :class="{ active: route.name === 'edit_workers' }">
                 Сотрудники
-            </button>
-        </RouterLink>
+            </RouterLink>
 
-        <RouterLink v-if="names_editor.includes(route.name)"
-            :to="'/edit_roles'">
-            <button class="header_button">
+            <RouterLink v-if="edit_roles.includes(user?.role?.name)"
+                :to="'/edit_roles'"
+                class="breadcrumb-link"
+                :class="{ active: route.name === 'edit_roles' }">
                 Роли
-            </button>
-        </RouterLink>
+            </RouterLink>
+        </template>
     </nav>
 </template>
 
 <style scoped>
-
-.header_button{
-    font-weight: 800; background-color: white; height: 30px;
-}
-
-main{
-    width: 100%;
+.breadcrumbs {
     display: flex;
-    flex-direction: row;
     align-items: center;
     gap: 8px;
+    height: 30px;
 }
 
-.breadcrumbs > a {
+.breadcrumb-link {
     color: var(--color-text-secondary);
     text-decoration: none;
     font-size: var(--font-size-sm);
@@ -72,20 +68,14 @@ main{
     white-space: nowrap;
 }
 
-.breadcrumbs > a:hover {
+.breadcrumb-link:hover {
     color: var(--color-primary);
     background-color: var(--color-primary-light);
 }
 
-.breadcrumbs > a.active {
+.breadcrumb-link.active {
     color: var(--color-primary);
     background-color: var(--color-primary-light);
     font-weight: var(--font-weight-semibold);
-}
-
-.breadcrumbs-divider {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
-    user-select: none;
 }
 </style>

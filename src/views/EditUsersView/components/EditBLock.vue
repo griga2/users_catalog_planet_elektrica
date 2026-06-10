@@ -29,7 +29,9 @@ const hors_options = [
 ]
 
 onMounted(() => {
-    // store.getRoles();
+    store.getRoles();
+    img_block.value.onerror = chengevis;
+    vis_ing.value = true;
 })
 
 const updateUser = () => {
@@ -43,7 +45,6 @@ const updateContact = (contact) => {
     timeAutID.value = setTimeout(async() => {
         debug('update branch')
         store.UpdateContact(contact)
-
     }, 500);
 }
 
@@ -59,23 +60,10 @@ const updateRole = async (role) => {
 }
 
 const chengevis = () => {
-    // console.log('ua')
     vis_ing.value = false;
 }
 
 const img_block = ref(null)
-
-onMounted(() => {
-    store.getRoles();
-    debug(img_block.value);
-    // if (current_user.value?.Photo) {
-        img_block.value.onerror = chengevis;
-        vis_ing.value = true;
-    // }
-
-
-})
-
 const vis_ing = ref(true);
 
 const firstDayStart = () => {
@@ -93,314 +81,364 @@ const hiringEmployer = () => {
 </script>
 
 <template>
-    <main class="main_edit">
-        <section class="activite_block">
-            <button @click="hiringEmployer">
-                Принят на работу
+    <main class="edit-block">
+        <section class="actions-bar">
+            <button class="action-btn action-btn--hire" @click="hiringEmployer">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Принять на работу
             </button>
-            <button @click="firstDayStart">
-                Вышел в первый день
+            <button class="action-btn action-btn--start" @click="firstDayStart">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M2 8l4 4L14 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Первый рабочий день
             </button>
-            <button @click="removeUser">
+            <button class="action-btn action-btn--dismiss" @click="removeUser">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
                 Уволить
             </button>
         </section>
-        <section style="display : flex; flex-direction:  column; width: 100%; flex-wrap: wrap;" >
-                <section style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%;">
-                    <section style="width: 100%; flex-direction: column;">
-                        <span class="header">Общая информация</span>
-                        <section class="info_block" style="flex-direction: column; flex-wrap: wrap; width: 100%;">
-                            <article class="input_block">
-                                <span>Фамилия</span>
-                                <n-input
-                                    @input="() => {updateUser()}" 
-                                    size="small" 
-                                    type="text"
-                                    v-model:value="current_user.LastName" 
-                                    placeholder=" "/>
-                            </article>
-                            <article class="input_block">
-                                <span>Имя</span>
-                                <n-input size="small" 
-                                    @input="() => {updateUser()}"
-                                    type="text" 
-                                    v-model:value="current_user.Name"
-                                    placeholder=" "/>
-                            </article>
-                            <article class="input_block">
-                                <span>Отчество</span>
-                                <n-input 
-                                    @input="() => {updateUser()}"
-                                    size="small" 
-                                    type="text"
-                                    v-model:value="current_user.MidName" 
-                                    placeholder=" "/>
-                            </article>               
-                        </section>
-                    </section>
-                    <section class="photo" style="z-index: 10; padding: 0px; margin: 0px; background-color: white;">
-                        <img v-if="vis_ing" ref="img_block" height="160px"
-                            style=" border-radius: 8px 0px 0px 8px; object-fit: cover; max-width: 200px;"
-                            :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + current_user?.Photo + '?t=' + new Date().getTime()">
-                        <img v-if="!vis_ing" src="../../../assets/userProfile.svg" 
-                            height="200px" style="border-radius: 6px 0px 0px 6px;">
-                        <input  @change="(event) => {
-                            debug(event);
-                            changeFile(event.target.files[0]);
-                        }"  
-                        type="file"
-                        placeholder=" "></input>
-                    </section>
-                </section>
-            <span class="header">Рабочая информация</span>        
-            <section 
-                class="info_column_block" 
-                style="width: 100%; flex-direction: column; flex: 1 2 3; flex-wrap: wrap; display: flex; height: 300px; width: 900px; align-items: start;">
-                <article class="input_block">
-                    <span>Роль</span>
-                    <n-select 
-                        @input="(v) => {updateRole(v)}" 
-                        v-model:value="current_user.role.id"
-                        :options="roles.map(el => {return {label:el.name,value:el.id}})" />
-                </article>
-                <article class="input_block">
-                    <span>Пол</span>
-                    <n-select
-                        @input="(v) => {debug('awd')}"
-                        v-model:value="current_user.Sex"
-                        :options="[{label:'Женский',value:'Female'}
-                        ,{label:'Мужской',value:'Male'}
-                        ,{label:'Не указан',value:''}]" />
-                </article>
-                <article class="input_block">
-                    <span>Дата Рождения</span>
-                    <n-input 
-                        @input="() => {updateUser()}" 
-                        size="small" 
-                        type="date"
-                        v-model:value="current_user.Birthday" 
-                        placeholder=" "/>
-                </article>
-                <article class="input_block">
-                    <span>Город проживания</span>
-                    <n-input 
-                            @input="() => {updateUser()}"
-                            size="small" 
-                            type="text"
-                            v-model:value="current_user.City" 
-                            placeholder=" "/>
-                </article>
-                <article v-for="contact of current_user.Contacs">
-                    <InputContact 
-                        @change_contact="updateContact(contact)"
-                        :id="contact[0]" :type="contact[1]" v-model="contact[2]">
-                    </InputContact>
-                </article>
-            </section>
-            <section class="info_column_block" style="width: 100%;">
-                <span class="header">Отпуск
-                    <n-checkbox v-model:checked="current_user.OnLeave"
-                        @click="updateUser()"/>
-                </span><br>
-                <section class="info_block" style="width: 100%;" v-if="current_user.OnLeave">
-                    <article style="display: flex; flex-direction: row;" >
-                        <article style="display: flex; flex-direction: row; gap: 10px;">
+
+        <section class="edit-content">
+            <section class="edit-main">
+                <section class="general-info">
+                    <h3 class="section-title">Общая информация</h3>
+                    <section class="info-grid">
+                        <article class="input-group">
+                            <label class="input-label">Фамилия</label>
                             <n-input
-                            v-model:value="current_user.LeaveStart"
-                            @change="updateUser()"
-                            type="date"
-                            placeholder=""
-                        /><n-input
-                            v-model:value="current_user.LeaveFinish"
-                            @change="updateUser()"
-                            type="date"
-                            placeholder=""
-                        />
+                                @input="() => {updateUser()}" 
+                                size="small" 
+                                type="text"
+                                v-model:value="current_user.LastName" 
+                                placeholder=" "/>
                         </article>
-                    </article>
-                    <article class="free_input_block" style=''>
-                        <span>Комментарий к отпуску</span>
-                        <n-input
-                            @input="() => {updateUser()}" 
-                            v-model:value="current_user.LeaveText"
-                            @change=""
-                            type="textarea"
-                            placeholder=" "
-                        />
-                    </article>
+                        <article class="input-group">
+                            <label class="input-label">Имя</label>
+                            <n-input size="small" 
+                                @input="() => {updateUser()}"
+                                type="text" 
+                                v-model:value="current_user.Name"
+                                placeholder=" "/>
+                        </article>
+                        <article class="input-group">
+                            <label class="input-label">Отчество</label>
+                            <n-input 
+                                @input="() => {updateUser()}"
+                                size="small" 
+                                type="text"
+                                v-model:value="current_user.MidName" 
+                                placeholder=" "/>
+                        </article>
+                        <article class="input-group">
+                            <label class="input-label">Дата рождения</label>
+                            <n-input 
+                                @input="() => {updateUser()}" 
+                                size="small" 
+                                type="date"
+                                v-model:value="current_user.Birthday" 
+                                placeholder=" "/>
+                        </article>
+                        <article class="input-group">
+                            <label class="input-label">Город проживания</label>
+                            <n-input 
+                                @input="() => {updateUser()}"
+                                size="small" 
+                                type="text"
+                                v-model:value="current_user.City" 
+                                placeholder=" "/>
+                        </article>
+                        <article class="input-group">
+                            <label class="input-label">Пол</label>
+                            <n-select
+                                @input="(v) => {debug('awd')}"
+                                v-model:value="current_user.Sex"
+                                :options="[{label:'Женский',value:'Female'}
+                                ,{label:'Мужской',value:'Male'}
+                                ,{label:'Не указан',value:''}]" />
+                        </article>
+                    </section>
                 </section>
-                <span class="header">Служебная информация</span>
-                <section class="info_block" style="width: 100%;">
-                    <article class="input_block">
-                        <span>Дата принятия на работу</span>
-                        <n-input 
+
+                <section class="work-info">
+                    <h3 class="section-title">Рабочая информация</h3>
+                    <section class="info-grid">
+                        <article class="input-group">
+                            <label class="input-label">Роль</label>
+                            <n-select 
+                                @input="(v) => {updateRole(v)}" 
+                                v-model:value="current_user.role.id"
+                                :options="roles.map(el => {return {label:el.name,value:el.id}})" />
+                        </article>
+                        <article v-for="contact of current_user.Contacts" :key="contact[0]" class="input-group">
+                            <InputContact 
+                                @change_contact="updateContact(contact)"
+                                :id="contact[0]" :type="contact[1]" v-model="contact[2]">
+                            </InputContact>
+                        </article>
+                    </section>
+                </section>
+
+                <section class="leave-info">
+                    <h3 class="section-title">
+                        Отпуск
+                        <n-checkbox v-model:checked="current_user.OnLeave"
+                            @click="updateUser()"/>
+                    </h3>
+                    <section class="info-grid" v-if="current_user.OnLeave">
+                        <article class="date-range">
+                            <n-input
+                                v-model:value="current_user.LeaveStart"
+                                @change="updateUser()"
+                                type="date"
+                                placeholder="Начало"
+                            />
+                            <n-input
+                                v-model:value="current_user.LeaveFinish"
+                                @change="updateUser()"
+                                type="date"
+                                placeholder="Окончание"
+                            />
+                        </article>
+                        <article class="input-group full-width">
+                            <label class="input-label">Комментарий к отпуску</label>
+                            <n-input
+                                @input="() => {updateUser()}" 
+                                v-model:value="current_user.LeaveText"
+                                @change=""
+                                type="textarea"
+                                placeholder=" "
+                            />
+                        </article>
+                    </section>
+                </section>
+
+                <section class="service-info">
+                    <h3 class="section-title">Служебная информация</h3>
+                    <section class="info-grid">
+                        <article class="input-group">
+                            <label class="input-label">Дата принятия на работу</label>
+                            <n-input 
                                 size="small" 
                                 type="date"
                                 @input="() => {updateUser()}" 
                                 v-model:value="current_user.EmploymentDate" 
                                 placeholder=" "/>
-                    </article>
-                    <!-- <article class="free_input_block">
-                        <span>Обязаности</span>
-                        <n-select 
-                        v-model:value="current_user.roles" 
-                        multiple 
-                        placeholder=" "
-                        :options="roles.map(el => {return {label:el.name,value: el.id}})" />
-                    </article> -->
-                    <article class="free_input_block" style=''>
-                        <span>Примечания</span>
-                        <n-input
-                            @input="() => {updateUser()}" 
-                            v-model:value="current_user.Bio"
-                            @change=""
-                            type="textarea"
-                            placeholder=" "
-                        />
-                    </article>
+                        </article>
+                        <article class="input-group full-width">
+                            <label class="input-label">Примечания</label>
+                            <n-input
+                                @input="() => {updateUser()}" 
+                                v-model:value="current_user.Bio"
+                                @change=""
+                                type="textarea"
+                                placeholder=" "
+                            />
+                        </article>
+                    </section>
                 </section>
             </section>
+
+            <aside class="edit-sidebar">
+                <div class="photo-container">
+                    <img v-if="vis_ing" ref="img_block" class="user-photo"
+                        :src="'https://s3.twcstorage.ru/136703eb-05e89941-0f10-4e65-b543-d67d43f62dea' + current_user?.Photo + '?t=' + new Date().getTime()"
+                        alt="Фото сотрудника">
+                    <img v-if="!vis_ing" src="../../../assets/userProfile.svg" class="user-photo user-photo--placeholder"
+                        alt="Фото не загружено">
+                </div>
+                <label class="file-upload">
+                    <input class="file-upload__input" type="file"
+                        @change="(event) => {
+                            debug(event);
+                            changeFile(event.target.files[0]);
+                        }"  
+                        accept="image/*">
+                    <span class="file-upload__text">Загрузить фото</span>
+                </label>
+            </aside>
         </section>
     </main>
 </template>
 
 <style scoped>
-
-
-.open{
-    height: 250px;
-    visibility: visible;
-}
-
-.activite_block{
-    display: flex;
-    flex-direction: row;
-
-    gap: 10px;
-
-}
-
-.info_column_block{
-}
-
-.child_block{
-    padding-left: 20px;
+.edit-block {
     display: flex;
     flex-direction: column;
+    gap: var(--spacing-md);
+    background: var(--color-card-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    padding: var(--spacing-lg);
+    height: 100%;
+    overflow-y: auto;
+}
+
+.actions-bar {
+    display: flex;
     flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
 }
 
-.close{
-    height: 20px;
-    visibility: hidden;
-}
-
-.header{
-    font-size: 26px;
-    color: black
-}
-
-.branch_name{
-    color: black
-}
-
-span{
-    color: #cbcbcb;
-}
-
-.infoblock{
-    padding: 10px;
-    display: flex;
-}
-
-article {
-    font-size: 16px;
-}
-
-.info_block{
-    display: flex;
-    gap: 20px;
-    flex-direction: row; 
-    flex-wrap: wrap;
+.action-btn {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    align-items: start;
-    justify-content: start;
-    width: 200px;
+    gap: 8px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font-family);
 }
 
-.input_block{
-    width: 250px;
+.action-btn--hire {
+    background: var(--color-success);
+    color: white;
+}
+
+.action-btn--hire:hover {
+    background: #059669;
+}
+
+.action-btn--start {
+    background: var(--color-primary);
+    color: white;
+}
+
+.action-btn--start:hover {
+    background: var(--color-primary-hover);
+}
+
+.action-btn--dismiss {
+    background: var(--color-error);
+    color: white;
+}
+
+.action-btn--dismiss:hover {
+    background: #DC2626;
+}
+
+.edit-content {
+    display: flex;
+    gap: var(--spacing-lg);
+}
+
+.edit-main {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: start;
-    justify-content: start;
+    gap: var(--spacing-lg);
+    min-width: 0;
 }
 
-.free_input_block{
-    width: 100%;
+.edit-sidebar {
+    width: 220px;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    align-items: start;
-    justify-content: start;
-}
-
-.info_block span{
-
-}
-
-.close_main{
-    height: 60px;
-}
-
-.open_main{
-    height: 250px;
-}
-
-.rotate_arrow{
-    transform: rotate(180deg);
-    transition: 600ms;
-}
-
-* {
-    font-family: circe-bold;
-    font-size: 20px;
-}
-
-.main_text:hover{
-    background-color: #cbcbcb;
-    transition: all 0.3s;
-    color: black;
-}
-
-.active{
-    background-color: #cbcbcb;
-}
-
-.main_text{
-    width: 100%;
-    border-radius: 6px;
-    padding: 4px;
-    display: flex; 
-    flex-direction: row;
     align-items: center;
-    justify-content: start;
-    gap:10px;
+    gap: var(--spacing-md);
 }
 
-input{
-    border: 0px;
+.section-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    margin: 0 0 var(--spacing-md) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
-.main_edit{
-    background-color: white;
-    height: calc(100% - 15px);
-    margin-bottom: 10px;
-    padding: 20px;
-    width: 50%;
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--spacing-md);
+}
 
+.input-group {
     display: flex;
     flex-direction: column;
-    overflow: scroll;
+    gap: 4px;
+}
+
+.input-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.input-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.photo-container {
+    width: 100%;
+    aspect-ratio: 3/4;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-hover);
+}
+
+.user-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-photo--placeholder {
+    object-fit: contain;
+    padding: var(--spacing-md);
+}
+
+.file-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    text-align: center;
+}
+
+.file-upload:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-light);
+}
+
+.file-upload__input {
+    display: none;
+}
+
+.file-upload__text {
+    font-size: var(--font-size-xs);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+.date-range {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.date-range > * {
+    flex: 1;
 }
 </style>

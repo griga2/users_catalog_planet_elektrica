@@ -3,16 +3,9 @@ import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <main>
-    <RouterView />
-  </main>
+  <RouterView />
 </template>
 
-<style scoped>
-main {
-  width: 100vw; 
-  height: 100vh;
-  background-color: var(--color-background);
-}
-
+<style>
+@import '@/assets/css/global.css';
 </style>
