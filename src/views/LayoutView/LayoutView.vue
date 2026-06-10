@@ -6,10 +6,10 @@ import { computed, onMounted, ref} from 'vue'
 import { storeToRefs } from 'pinia';
 import Button from 'naive-ui/es/button/src/Button';
 // import LoginModal from '../'
-const store = useUserStore();
-const {
-  user,
-} = storeToRefs(store); 
+// const store = useUserStore();
+// const {
+//   user,
+// } = storeToRefs(store); 
 
 const store = useUserStore()
 const route = useRoute()
