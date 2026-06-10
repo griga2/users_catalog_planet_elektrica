@@ -1,15 +1,9 @@
 <script setup>
-import Breadcrumbs from './components/Breadcrumbs.vue';
-import { RouterLink, RouterView } from 'vue-router'
-import { useUserStore } from '../../stores/user.js'
-import { computed, onMounted, ref} from 'vue'
-import { storeToRefs } from 'pinia';
-import Button from 'naive-ui/es/button/src/Button';
-import LoginModal from '../../components/LoginModel.vue'
-const store = useUserStore();
-const {
-  user,
-} = storeToRefs(store); 
+import { useUserStore } from '@/stores/user'
+import { computed, onMounted, ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import Breadcrumbs from './components/Breadcrumbs.vue'
+import { RouterView, useRoute } from 'vue-router'
 
     onMounted(async () => {
         await store.getUser();
@@ -21,6 +15,26 @@ const {
     const open_model = ref(false)
     const open_bio_modal = ref(false)
 
+onMounted(async () => {
+    await store.getUser()
+})
+
+const login = ref('')
+const pass = ref('')
+const bio = ref('')
+const open_login = ref(false)
+const open_bio = ref(false)
+const active_menu = ref(false)
+
+const menu_items = computed(() => [
+    { name: 'catalog', label: 'Справочник', icon: 'catalog', path: '/catalog' },
+    { name: 'editor', label: 'Структура', icon: 'struct', path: '/edit_struct' },
+    { name: 'edit_workers', label: 'Сотрудники', icon: 'employees', path: '/edit_workers' },
+    { name: 'edit_roles', label: 'Роли', icon: 'roles', path: '/edit_roles' }
+])
+
+const is_active = (name) => route.name === name
+const requires_auth = (name) => ['editor', 'edit_workers', 'edit_roles'].includes(name)
 </script>
 
 <template>
@@ -115,23 +129,173 @@ const {
     padding: 20px 14% 20px 13%;
     margin: 0px;
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-     align-items: center;
+    height: 100vh;
+    width: 100%;
 }
 
-.back_color{
-    background-color: #ebebeb;
-}
-
-.modal_layout{
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--color-sidebar-bg);
+    border-right: 1px solid var(--color-border);
     display: flex;
     flex-direction: column;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+}
+
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.logo {
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 20px;
 
-    padding: 10px;
-} 
+.logo-icon {
+    font-size: 24px;
+}
 
+.logo-text {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+}
+
+.sidebar-nav {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius-lg);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    transition: all 0.15s;
+}
+
+.nav-item:hover {
+    background: var(--color-hover-bg);
+    color: var(--color-text);
+}
+
+.nav-item.active {
+    background: var(--color-primary);
+    color: white;
+    font-weight: var(--font-weight-semibold);
+}
+
+.nav-icon {
+    font-size: 18px;
+}
+
+/* Main wrapper */
+.main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header */
+.header {
+    height: var(--header-height);
+    background: var(--color-header-bg);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--radius-md);
+}
+
+.menu-toggle:hover {
+    background: var(--color-hover-bg);
+}
+
+.header-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: var(--radius-lg);
+    transition: background 0.15s;
+}
+
+.user-menu:hover {
+    background: var(--color-hover-bg);
+}
+
+.user-name {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text);
+}
+
+/* Main content */
+.main-content {
+    flex: 1;
+    background: var(--color-bg);
+    overflow: auto;
+    padding: 24px;
+}
+
+/* Auth form */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        height: 100%;
+        z-index: 100;
+        transform: translateX(-100%);
+    }
+    
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    
+    .menu-toggle {
+        display: block;
+    }
+    
+    .user-name {
+        display: none;
+    }
+}
 </style>

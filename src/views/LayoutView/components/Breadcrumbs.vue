@@ -1,32 +1,18 @@
 <script setup>
-import { useRoute } from 'vue-router';
+import { useRoute, RouterLink } from 'vue-router';
 import { useUserStore } from '@/stores/user';
-import { defineStore, storeToRefs } from 'pinia';
+import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 
-
 const store = useUserStore();
-const {
-    user
-} = storeToRefs(store);
+const { user } = storeToRefs(store);
 const route = useRoute()
 
-const names_editor = [
-    'editor',
-    'edit_workers',
-    'edit_roles'
-]
+const names_editor = ['editor', 'edit_workers', 'edit_roles']
 
-const checkLogin = computed(() => {
-    return user.token != '';
-})
-
-const chectEditBlockIsWisible = computed((block) => {
-    return block
-})
+const checkLogin = computed(() => user.value.token != '')
 
 const edit_roles = ['hr'];
-
 </script>
 
 <template>
@@ -58,8 +44,7 @@ const edit_roles = ['hr'];
                 Роли
             </button>
         </RouterLink>
-    </main>
-
+    </nav>
 </template>
 
 <style scoped>
@@ -72,29 +57,35 @@ main{
     width: 100%;
     display: flex;
     flex-direction: row;
-    gap: 20px;
-    background-color: white;
-    padding:8px;
-    border-radius: 10px;
-    justify-content: start;
     align-items: center;
+    gap: 8px;
 }
 
-button{
-    border-radius: 8px;
-    background-color: white;
-    border: 0px;
-    font-size: 28px;
+.breadcrumbs > a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+    white-space: nowrap;
 }
 
-.inter_text{
-    border-radius: 8px;
-    background-color: white;
-    border: 0px;
-    font-size: 28px;
-    padding: 5px;
-    font-family: circe;
-    text-align: center;
+.breadcrumbs > a:hover {
+    color: var(--color-primary);
+    background-color: var(--color-primary-light);
 }
 
+.breadcrumbs > a.active {
+    color: var(--color-primary);
+    background-color: var(--color-primary-light);
+    font-weight: var(--font-weight-semibold);
+}
+
+.breadcrumbs-divider {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    user-select: none;
+}
 </style>
