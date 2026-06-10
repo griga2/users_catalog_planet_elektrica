@@ -5,7 +5,7 @@ import { useUserStore } from '../../stores/user.js'
 import { computed, onMounted, ref} from 'vue'
 import { storeToRefs } from 'pinia';
 import Button from 'naive-ui/es/button/src/Button';
-import LoginModal from '../../components/LoginModel.vue'
+// import LoginModal from '../'
 const store = useUserStore();
 const {
   user,
